@@ -17,6 +17,11 @@ typedef std::vector< /* Layer */ std::vector< /* Neuron */ std::vector< double /
 
 typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > Deltas;
 
+typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > Biases;
+
+typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > BiasesDeltas;
+
+
 struct SigmoidFunction {
     inline double operator() ( const double t ) const {
         return ( 1.0/( 1.0 + exp(-t) ) );
@@ -24,14 +29,11 @@ struct SigmoidFunction {
 };
 
 
-//template< typename IT, typename OT, typename ActivationFunction >
-//std::vector< /* Layer */ std::vector< IT /* Neuron */ > >
-//feed( const Network & network, const std::pair< IT, OT > & data_sample );
-
 
 template< typename IT, typename OT, typename ActivationFunction = SigmoidFunction >
 std::vector< /* Layer */ std::vector< IT /* Neuron */ > >
-feed( const Network & network, const std::pair< IT, OT > & data_sample ) {
+feed( const Network & network, const Biases & biases, const std::pair< IT, OT > & data_sample )
+{
     static ActivationFunction ac;
 
     //    std::cerr << std::endl;
@@ -58,6 +60,7 @@ feed( const Network & network, const std::pair< IT, OT > & data_sample ) {
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++ k ) { // Loop over weights
                 sum += network_result[ i - 1 ][ k ] * network[ i ][ j ][ k ];
             }
+            sum += biases[ i ][ j ];
             network_result[ i ][ j ] = ac( sum );
         }
     }
@@ -95,37 +98,37 @@ Deltas calculate_new_deltas( const Network & network,
                              const RT & network_result,
                              const std::pair< IT, OT > & data_sample )
 {
-    Deltas new_deltas( network.size() );
+    Deltas deltas( network.size() );
     for ( std::size_t i = 0; i < network.size(); ++ i ) {
-        new_deltas[ i ].resize( network[ i ].size() );
+        deltas[ i ].resize( network[ i ].size() );
     }
 
     // Calculate error gradient
     {
         const auto error_gradient = output_gradient( network_result.back(), data_sample.second );
-        assert( new_deltas.back().size() == error_gradient.size() );
-        new_deltas.back() = error_gradient;
+        assert( deltas.back().size() == error_gradient.size() );
+        deltas.back() = error_gradient;
     }
 
-    for ( std::size_t i = new_deltas.size() - 2; i > 0; -- i ) {
-        std::cerr << std::endl;
+    for ( std::size_t i = deltas.size() - 2; i > 0; -- i ) {
+        //        std::cerr << std::endl;
         for ( std::size_t j = 0; j < network[ i ].size(); ++ j ) {
             double sum = 0.0;
             for ( std::size_t k = 0; k < network[ i + 1 ].size(); ++ k ) {
-                sum += new_deltas[ i + 1 ][ k ] * network[ i + 1 ][ k ][ j ];
+                sum += deltas[ i + 1 ][ k ] * network[ i + 1 ][ k ][ j ];
             }
-            new_deltas[ i ][ j ] = network_result[ i ][ j ] * ( 1.0 - network_result[ i ][ j ] ) * sum;
+            deltas[ i ][ j ] = network_result[ i ][ j ] * ( 1.0 - network_result[ i ][ j ] ) * sum;
         }
     }
 
-    return std::move( new_deltas );
+    return std::move( deltas );
 }
 
 template< typename IT, typename OT, typename RT >
-inline
-WeightDeltas
+std::tuple< WeightDeltas, BiasesDeltas >
 backpropagation( const Network & network,
                  const WeightDeltas & prev_weight_deltas,
+                 const BiasesDeltas & prev_biases_deltas,
                  const RT & network_result,
                  const std::pair< IT, OT > & data_sample,
                  const double momentum,
@@ -133,6 +136,7 @@ backpropagation( const Network & network,
 {
     //  Calculate new deltas
     WeightDeltas new_weight_deltas = prev_weight_deltas;
+    BiasesDeltas new_biases_deltas = prev_biases_deltas;
 
     const Deltas new_deltas = calculate_new_deltas( network, network_result, data_sample );
 
@@ -143,33 +147,43 @@ backpropagation( const Network & network,
             // Neuron
             for ( std::size_t k = 0; k < new_weight_deltas[ i ][ j ].size(); ++ k ) {
                 // Weight
-                new_weight_deltas[ i ][ j ][ k ] = learning_rate * network_result[ i ][ j ] * new_deltas[ i ][ j ] + momentum * new_weight_deltas[ i ][ j ][ k ];
+                new_weight_deltas[ i ][ j ][ k ] = learning_rate * network_result[ i ][ j ] * new_deltas[ i ][ j ] + momentum * prev_weight_deltas[ i ][ j ][ k ];
             }
+
+            // Bias
+            new_biases_deltas[ i ][ j ] = learning_rate * new_deltas[ i ][ j ];
         }
     }
 
     //    std::cerr << "new_weight_deltas:\n" << new_weight_deltas << std::endl;
 
-    return std::move( new_weight_deltas );
+    return std::move( std::make_tuple( new_weight_deltas, prev_biases_deltas ) );
 }
 
 
 template < typename IT, typename OT >
-std::pair< Network, WeightDeltas >
+std::tuple< Network, WeightDeltas, Biases, BiasesDeltas >
 init_network( const std::vector< unsigned int > & layers_description,
               const std::vector< std::pair< IT, OT > > & training_dataset )
 {
     Network network;
     WeightDeltas weight_deltas;
+    Biases biases;
+    BiasesDeltas biases_deltas;
     {
-        weight_deltas.resize( layers_description.size() );
         network.resize( layers_description.size() );
+        weight_deltas.resize( layers_description.size() );
+        biases.resize( layers_description.size() );
+        biases_deltas.resize( layers_description.size() );
+
         for ( std::size_t i = 0; i < layers_description.size(); ++ i ) {
 
-            weight_deltas[ i ].resize( layers_description[ i ] );
-
-            // Resize layer
             network[ i ].resize( layers_description[ i ] );
+            weight_deltas[ i ].resize( layers_description[ i ] );
+            biases[ i ].resize( layers_description[ i ] );
+            biases_deltas[ i ].resize( layers_description[ i ] );
+
+            std::fill( biases[ i ].begin(), biases[ i ].end(), -1.0 );
 
             for ( std::size_t j = 0; j < network[ i ].size(); ++ j ) {
 
@@ -182,18 +196,20 @@ init_network( const std::vector< unsigned int > & layers_description,
                 else /*( i > 0 )*/ {
                     // Hidden layers
                     network[ i ][ j ].resize( network[ i - 1 ].size() );
-                    std::generate( network[ i ][ j ].begin(), network[ i ][ j ].end(), std::bind( rand_range, -0.5, 0.5 ) );
+                    std::generate( network[ i ][ j ].begin(), network[ i ][ j ].end(), std::bind( rand_range, -0.3, 0.3 ) );
                 }
 
                 weight_deltas[ i ][ j ].resize( network[ i ] [ j ].size() );
             }
         }
-        std::cerr << "network:\n" << network << std::endl;
-        std::cerr << "weight_deltas:\n" << weight_deltas << std::endl;
-    }
-    return std::move( std::make_pair( network, weight_deltas ) );
-}
 
+//        std::cerr << "network:\n" << network << std::endl;
+//        std::cerr << "weight_deltas:\n" << weight_deltas << std::endl;
+//        std::cerr << "biases:\n" << biases << std::endl;
+//        std::cerr << "biases_deltas:\n" << biases_deltas << std::endl;
+    }
+    return std::move( std::make_tuple( network, weight_deltas, biases, biases_deltas ) );
+}
 
 
 void update_weights( Network & network, const WeightDeltas & weight_deltas )
@@ -206,11 +222,11 @@ void update_weights( Network & network, const WeightDeltas & weight_deltas )
             // Neuron
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++k ) {
                 // weight
-                //                            std::cerr << "network[ " << i << " ][ " << j << " ][ " <<  k  << " ]: "
-                //                                      << network[ i ][ j ][ k ] << std::endl;
-                //                            std::cerr << "weight_deltas[ " << i << " ][ " << j << " ][ " <<  k  << " ]: "
-                //                                      << weight_deltas[ i ][ j ][ k ] << std::endl;
-                network[ i ][ j ][ k ] += weight_deltas[ i ][ j ][ k ];
+                network[ i ][ j ][ k ] -= weight_deltas[ i ][ j ][ k ];
+                /*
+                std::cerr << "network[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << network[ i ][ j ][ k ] << std::endl;
+                std::cerr << "weight_deltas[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << weight_deltas[ i ][ j ][ k ] << std::endl;
+                */
             }
             //                        std::cerr << std::endl;
         }
@@ -220,11 +236,22 @@ void update_weights( Network & network, const WeightDeltas & weight_deltas )
 }
 
 
+void update_biases( Biases & biases, const BiasesDeltas & biases_deltas )
+{
+    for ( std::size_t i = 0; i < biases.size(); ++ i ) {
+        for ( std::size_t j = 0; j < biases[ i ].size(); ++ j ) {
+            biases[ i ][ j ] -= biases_deltas[ i ][ j ];
+        }
+    }
+}
+
+
 template< typename IT, typename OT >
 Network
 network( const std::vector< unsigned int > & layers_description,
          const std::vector< std::pair< IT, OT > > & training_dataset,
          const std::vector< std::pair< IT, OT > > & testing_dataset,
+         const double desired_accuracy,
          const unsigned int max_epoch,
          const double momentum,
          const double learning_rate)
@@ -238,16 +265,19 @@ network( const std::vector< unsigned int > & layers_description,
     std::cerr << "layers_description: " << layers_description << std::endl;
 
     // Init network
-    auto init_network_pair = init_network( layers_description, training_dataset );
-    Network network = std::move( init_network_pair.first );
-    WeightDeltas weight_deltas = std::move( init_network_pair.second );
+    auto init_network_weight_bias_biases = init_network( layers_description, training_dataset );
+    Network network = std::move( std::get<0>(init_network_weight_bias_biases) );
+    WeightDeltas weight_deltas = std::move( std::get<1>(init_network_weight_bias_biases) );
+    Biases biases = std::move( std::get<2>(init_network_weight_bias_biases) );
+    BiasesDeltas biases_deltas = std::move( std::get<3>(init_network_weight_bias_biases) );
 
-    //    /*
+    //        /*
     unsigned int epoch_counter = 0;
+    double prev_err = 1.0;
 
     while ( true ) {
         if ( max_epoch == epoch_counter++ ) break;
-        std::cerr << "epoch_counter: " << epoch_counter << std::endl;
+//        std::cerr << "epoch_counter: " << epoch_counter << std::endl;
 
         double epoch_error = 0.0;
 
@@ -255,23 +285,46 @@ network( const std::vector< unsigned int > & layers_description,
         {
             // Feed forward
             const std::pair< IT, OT > & data_sample = training_dataset.at( dataIndex );
-            const auto network_result = feed( network, data_sample );
+            const auto network_result = feed( network, biases, data_sample );
 
             const double error = std::pow( (network_result.back()[ 0 ] - data_sample.second), 2.0 );
-            std::cerr << "error: " << error << std::endl;
+            //            std::cerr << "error: " << error << std::endl;
             epoch_error += error;
 
             // Back propagation
-            weight_deltas =  backpropagation( network, weight_deltas, network_result, data_sample, momentum, learning_rate );
+            auto weight_bias_deltas = backpropagation( network, weight_deltas, biases_deltas, network_result, data_sample, momentum, learning_rate );
+            weight_deltas = std::move( std::get<0>( weight_bias_deltas ) );
+            biases_deltas = std::move( std::get<1>( weight_bias_deltas ) );
         }
 
         epoch_error /= training_dataset.size();
 
+
+        if ( (epoch_error <= desired_accuracy) || ( epoch_error > prev_err ) ) {
+            std::cerr << "Achieved accuracy: " << epoch_error << std::endl;
+            break;
+        }
         std::cerr << "epoch_error: " << epoch_error << std::endl;
+        prev_err = epoch_error;
+
         update_weights( network, weight_deltas );
+        update_biases( biases, biases_deltas );
 
     }
-    //    */
+    //        */
+
+    // Evaluation
+    std::cerr << "Testing evaluation:\n";
+    for ( std::size_t i = 0; i < testing_dataset.size(); ++ i ) {
+        const std::pair< IT, OT > & data_sample = testing_dataset[ i ];
+
+        const auto result = feed( network, biases, data_sample );
+        const OT & obtained = result.back()[ 0 ];
+
+        std::cerr << "desired: " << data_sample.second << std::endl;
+        std::cerr << "obtained: " << obtained << std::endl;
+        std::cerr << std::endl;
+    }
 
 
     return network;

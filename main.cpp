@@ -14,7 +14,7 @@
 
 int main() {
 
-    constexpr unsigned int number_of_points = 20;
+    constexpr unsigned int number_of_points = 100;
     constexpr double a = 0.0;
     constexpr double b = 1.0;
     constexpr double step = ( b - a ) / (number_of_points - 1);
@@ -46,8 +46,8 @@ int main() {
     //    std::cerr << "training_res: " << training_res.size() << ":: " << training_res << std::endl;
     //    std::cerr << "testing_res: " << testing_res.size() << ":: " << testing_res << std::endl;
 
-    const std::vector< unsigned int > layers_description = { 1, 5, 1 };
-    network( layers_description, training_res, testing_res, 20, 0.5, 0.01 );
+    const std::vector< unsigned int > layers_description = { 1, 35, 1 };
+    network( layers_description, training_res, testing_res, 1e-2, 6000, 0.06, 0.001 );
 
     /*
     {
