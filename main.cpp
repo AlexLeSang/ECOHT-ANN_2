@@ -38,16 +38,16 @@ int main() {
 
     // Split dataset
 
-    const auto splitted_dataset = split( dataset_vector, std::make_tuple( 0.7, 0.3 ) );
+    auto splitted_dataset = split( dataset_vector, std::make_tuple( 0.7, 0.3 ) );
 
-    const auto & training_res = std::get<0>( splitted_dataset );
-    const auto & testing_res = std::get<1>( splitted_dataset );
+    const auto & training_res = std::move( std::get<0>( splitted_dataset ) );
+    const auto & testing_res = std::move( std::get<1>( splitted_dataset ) );
 
     //    std::cerr << "training_res: " << training_res.size() << ":: " << training_res << std::endl;
     //    std::cerr << "testing_res: " << testing_res.size() << ":: " << testing_res << std::endl;
 
-    const std::vector< unsigned int > layers_description = { 1, 35, 1 };
-    network( layers_description, training_res, testing_res, 1e-2, 6000, 0.06, 0.001 );
+    const std::vector< unsigned int > layers_description = { 1, 25, 1 };
+    network< double, double, LogisticFunction, LogisticFunctionDerivative > ( layers_description, training_res, testing_res, 1e-2, 6000, 0.6, 0.001 );
 
     /*
     {

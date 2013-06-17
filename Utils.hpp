@@ -93,7 +93,7 @@ split( const std::vector<T> & dataset, const std::tuple< const double, const dou
     assert( std::get<1>( distribution ) >= 0.0 );
     assert( std::get<1>( distribution ) <= 1.0 );
 
-    assert( std::get<0>( distribution ) + std::get<1>( distribution ) == 1.0 );
+    assert( std::fabs( (std::get<0>( distribution ) + std::get<1>( distribution ) ) ) - 1.0 < 1e-8 );
 
     std::tuple< std::vector<T>/*Training*/, std::vector<T>/*Testing*/ > result;
 

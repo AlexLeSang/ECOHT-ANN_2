@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include "Utils.hpp"
+#include "ActivationFunction.hpp"
 
 typedef std::vector< /* Layer */ std::vector< /* Neuron */ std::vector< double /* Weight */ > > > Network;
 
@@ -22,15 +23,7 @@ typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > Biases;
 typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > BiasesDeltas;
 
 
-struct SigmoidFunction {
-    inline double operator() ( const double t ) const {
-        return ( 1.0/( 1.0 + exp(-t) ) );
-    }
-};
-
-
-
-template< typename IT, typename OT, typename ActivationFunction = SigmoidFunction >
+template< typename IT, typename OT, typename ActivationFunction = LogisticFunction >
 std::vector< /* Layer */ std::vector< IT /* Neuron */ > >
 feed( const Network & network, const Biases & biases, const std::pair< IT, OT > & data_sample )
 {
@@ -70,34 +63,37 @@ feed( const Network & network, const Biases & biases, const std::pair< IT, OT > 
     return std::move( network_result );
 }
 
-template < typename OT >
-OT output_gradient( const OT & obtained, const OT & desired )
+template < typename OT, typename ActivationFunctionDerivative = SigmoidFunctionDerivative >
+inline
+OT
+output_gradient( const OT & obtained, const OT & desired )
 {
-    //    std::cerr << "obtained: " << obtained << std::endl;
-    //    std::cerr << "desired: " << desired << std::endl;
-    OT gradient;
-    gradient = obtained * ( 1.0 - obtained ) * ( desired - obtained );
-    //    std::cerr << "gradient: " << gradient << std::endl;
-    return gradient;
+    static ActivationFunctionDerivative acd;
+    //    gradient = obtained * ( 1.0 - obtained ) * ( desired - obtained );
+    return acd( obtained ) * ( desired - obtained );
 }
 
-template< typename OT >
-std::vector<OT> output_gradient( const std::vector<OT> & obtained_vector, const OT & desired )
+template< typename OT, typename ActivationFunctionDerivative = SigmoidFunctionDerivative >
+inline
+std::vector<OT>
+output_gradient( const std::vector<OT> & obtained_vector, const OT & desired )
 {
     std::vector<OT> gradient_vector( obtained_vector.size() );
     for ( std::size_t i = 0; i < gradient_vector.size(); ++ i ) {
-        gradient_vector[ i ] = output_gradient( obtained_vector[ i ], desired );
+        gradient_vector[ i ] = output_gradient< OT, ActivationFunctionDerivative >( obtained_vector[ i ], desired );
     }
-    return gradient_vector;
+    return std::move( gradient_vector );
 }
 
 
-template< typename IT, typename OT, typename RT >
+template< typename IT, typename OT, typename RT, typename ActivationFunctionDerivative = SigmoidFunctionDerivative >
 inline
 Deltas calculate_new_deltas( const Network & network,
                              const RT & network_result,
                              const std::pair< IT, OT > & data_sample )
 {
+    static ActivationFunctionDerivative acd;
+
     Deltas deltas( network.size() );
     for ( std::size_t i = 0; i < network.size(); ++ i ) {
         deltas[ i ].resize( network[ i ].size() );
@@ -105,7 +101,7 @@ Deltas calculate_new_deltas( const Network & network,
 
     // Calculate error gradient
     {
-        const auto error_gradient = output_gradient( network_result.back(), data_sample.second );
+        const auto error_gradient = output_gradient< OT, ActivationFunctionDerivative >( network_result.back(), data_sample.second );
         assert( deltas.back().size() == error_gradient.size() );
         deltas.back() = error_gradient;
     }
@@ -117,15 +113,22 @@ Deltas calculate_new_deltas( const Network & network,
             for ( std::size_t k = 0; k < network[ i + 1 ].size(); ++ k ) {
                 sum += deltas[ i + 1 ][ k ] * network[ i + 1 ][ k ][ j ];
             }
-            deltas[ i ][ j ] = network_result[ i ][ j ] * ( 1.0 - network_result[ i ][ j ] ) * sum;
+//            deltas[ i ][ j ] = network_result[ i ][ j ] * ( 1.0 - network_result[ i ][ j ] ) * sum;
+            deltas[ i ][ j ] = acd( network_result[ i ][ j ] ) * sum;
         }
     }
 
     return std::move( deltas );
 }
 
-template< typename IT, typename OT, typename RT >
+template< typename IT,
+          typename OT,
+          typename RT,
+          typename ActivationFunction = SigmoidFunction,
+          typename ActivationFunctionDerivative = SigmoidFunctionDerivative >
+
 std::tuple< WeightDeltas, BiasesDeltas >
+
 backpropagation( const Network & network,
                  const WeightDeltas & prev_weight_deltas,
                  const BiasesDeltas & prev_biases_deltas,
@@ -138,7 +141,7 @@ backpropagation( const Network & network,
     WeightDeltas new_weight_deltas = prev_weight_deltas;
     BiasesDeltas new_biases_deltas = prev_biases_deltas;
 
-    const Deltas new_deltas = calculate_new_deltas( network, network_result, data_sample );
+    const Deltas new_deltas = calculate_new_deltas< IT, OT, RT, ActivationFunctionDerivative > ( network, network_result, data_sample );
 
     // Calculate new weigth deltas
     for ( std::size_t i = 0; i < new_weight_deltas.size(); ++ i ) {
@@ -147,11 +150,12 @@ backpropagation( const Network & network,
             // Neuron
             for ( std::size_t k = 0; k < new_weight_deltas[ i ][ j ].size(); ++ k ) {
                 // Weight
-                new_weight_deltas[ i ][ j ][ k ] = learning_rate * network_result[ i ][ j ] * new_deltas[ i ][ j ] + momentum * prev_weight_deltas[ i ][ j ][ k ];
+                new_weight_deltas[ i ][ j ][ k ] = learning_rate * network_result[ i ][ j ] * new_deltas[ i ][ j ] +
+                        momentum * prev_weight_deltas[ i ][ j ][ k ];
             }
 
             // Bias
-            new_biases_deltas[ i ][ j ] = learning_rate * new_deltas[ i ][ j ];
+            new_biases_deltas[ i ][ j ] = learning_rate * new_deltas[ i ][ j ] + momentum * prev_biases_deltas[ i ][ j ];
         }
     }
 
@@ -212,41 +216,43 @@ init_network( const std::vector< unsigned int > & layers_description,
 }
 
 
-void update_weights( Network & network, const WeightDeltas & weight_deltas )
+inline
+Network
+update_weights( const Network & network, const WeightDeltas & weight_deltas )
 {
-    //            std::cerr << "network:\n" << network << std::endl;
-    //            std::cerr << std::endl;
+    Network new_network = network;
     for ( std::size_t i = 0; i < network.size(); ++ i ) {
         // Layer
         for ( std::size_t j = 0; j < network[ i ].size(); ++ j ) {
             // Neuron
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++k ) {
                 // weight
-                network[ i ][ j ][ k ] -= weight_deltas[ i ][ j ][ k ];
-                /*
-                std::cerr << "network[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << network[ i ][ j ][ k ] << std::endl;
-                std::cerr << "weight_deltas[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << weight_deltas[ i ][ j ][ k ] << std::endl;
-                */
+                new_network[ i ][ j ][ k ] -= weight_deltas[ i ][ j ][ k ];
             }
-            //                        std::cerr << std::endl;
         }
-        //                    std::cerr << std::endl;
     }
-    //            std::cerr << "network:\n" << network << std::endl;
+    return std::move( new_network );
 }
 
 
-void update_biases( Biases & biases, const BiasesDeltas & biases_deltas )
+inline
+Biases
+update_biases( const Biases & biases, const BiasesDeltas & biases_deltas )
 {
+    Biases new_biases = biases;
     for ( std::size_t i = 0; i < biases.size(); ++ i ) {
         for ( std::size_t j = 0; j < biases[ i ].size(); ++ j ) {
-            biases[ i ][ j ] -= biases_deltas[ i ][ j ];
+            new_biases[ i ][ j ] -= biases_deltas[ i ][ j ];
         }
     }
+    return std::move( new_biases );
 }
 
 
-template< typename IT, typename OT >
+template< typename IT,
+          typename OT,
+          typename ActivationFunction = SigmoidFunction,
+          typename ActivationFunctionDerivative = SigmoidFunctionDerivative >
 Network
 network( const std::vector< unsigned int > & layers_description,
          const std::vector< std::pair< IT, OT > > & training_dataset,
@@ -292,7 +298,7 @@ network( const std::vector< unsigned int > & layers_description,
             epoch_error += error;
 
             // Back propagation
-            auto weight_bias_deltas = backpropagation( network, weight_deltas, biases_deltas, network_result, data_sample, momentum, learning_rate );
+            auto weight_bias_deltas = backpropagation< IT, OT, typename std::remove_reference< decltype(network_result) >::type, ActivationFunction, ActivationFunctionDerivative >( network, weight_deltas, biases_deltas, network_result, data_sample, momentum, learning_rate );
             weight_deltas = std::move( std::get<0>( weight_bias_deltas ) );
             biases_deltas = std::move( std::get<1>( weight_bias_deltas ) );
         }
@@ -308,7 +314,7 @@ network( const std::vector< unsigned int > & layers_description,
         prev_err = epoch_error;
 
         update_weights( network, weight_deltas );
-        update_biases( biases, biases_deltas );
+        biases = update_biases( biases, biases_deltas );
 
     }
     //        */

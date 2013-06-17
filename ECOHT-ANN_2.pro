@@ -9,5 +9,6 @@ SOURCES += main.cpp
 
 HEADERS += \
     Network.hpp \
-    Utils.hpp
+    Utils.hpp \
+    ActivationFunction.hpp
 
