@@ -40,7 +40,7 @@ double rand_range( const double min, const double max ) {
 
 template < typename T >
 inline constexpr
-size_t
+std::size_t
 dimension ( const std::vector<T> & vector )
 {
     return vector.size();
@@ -48,7 +48,7 @@ dimension ( const std::vector<T> & vector )
 
 template < typename T >
 inline constexpr
-size_t
+std::size_t
 dimension ( const T & )
 {
     return 1;
@@ -61,7 +61,7 @@ merge( const std::vector<T> & vector_t, const std::vector<U> & vector_u )
 {
     assert( vector_t.size() == vector_u.size() );
     std::vector< std::pair< T, U > > result( vector_t.size() );
-    for ( size_t i = 0; i < result.size(); ++i ) {
+    for ( std::size_t i = 0; i < result.size(); ++i ) {
         result[ i ] = std::make_pair( vector_t[ i ], vector_u[ i ] );
     }
     return result;
@@ -74,7 +74,7 @@ merge_to_vector( const std::vector<T> & vector_t, const std::vector<T> & vector_
 {
     assert( vector_t.size() == vector_u.size() );
     std::vector< std::vector<T> > result( vector_t.size() );
-    for ( size_t i = 0; i < result.size(); ++i ) {
+    for ( std::size_t i = 0; i < result.size(); ++i ) {
         std::vector< T > tmp_res( 2 );
         tmp_res[ 0 ] = vector_t[ i ];
         tmp_res[ 1 ] = vector_u[ i ];

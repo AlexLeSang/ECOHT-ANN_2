@@ -50,11 +50,14 @@ int main() {
     const std::vector< unsigned int > layers_description = { 1, 20, 1 };
     network< double, double, TanhFunction, TanhFunctionDerivative > ( layers_description, training_res, testing_res, 1e-2, 60000, 0.01, 0.0001 );
 
-    */
+//    std::vector< double > x1 = { 0, 0, 1, 1 };
+//    std::vector< double > x2 = { 0, 1, 0, 1 };
+//    std::vector< double > y1 = { 0, 1, 1, 0 };
 
-    std::vector< double > x1 = { 0, 0, 1, 1 };
-    std::vector< double > x2 = { 0, 1, 0, 1 };
-    std::vector< double > y1 = { 0, 1, 1, 0 };
+    std::vector< double > x1 = { 0, 0 };
+    std::vector< double > x2 = { 1, 0 };
+    std::vector< double > y1 = { 1, 0 };
+
 
     const auto argument = merge_to_vector( x1, x2 );
     std::cerr << "argument: " << argument << std::endl;
@@ -62,11 +65,34 @@ int main() {
     const auto training_dataset = merge( argument, y1 );
     std::cerr << "training_dataset: " << training_dataset << std::endl;
 
-    const std::vector< unsigned int > layers_description = { 2, 5, 7, 1 };
+    const std::vector< unsigned int > layers_description = { 2, 4, 1 };
 //    typename std::remove_cv <decltype( argument )>::type
     network< std::vector<double>, double, LogisticFunction, LogisticFunctionDerivative > ( layers_description,
-                                                                              training_dataset, training_dataset, 1e-2, 20, 0.8, 0.1 );
+                                                                              training_dataset, training_dataset, 1e-4, 9000, 0.9, 0.1 );
+    */
 
+    constexpr unsigned int number_of_points = 20;
+    constexpr double a = 0.0;
+    constexpr double b = 1.0;
+    constexpr double step = ( b - a ) / (number_of_points - 1);
+
+    std::vector< double > x( number_of_points );
+    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
+        x[ i ] = step * i;
+    }
+
+    std::cerr << "x: " << x << std::endl;
+
+    std::vector< double > x1( number_of_points );
+
+    std::generate( x1.begin(), x1.end(), std::bind( []( const double step, int & i ) {return step * i++;}, step, 0 ) );
+    std::cerr << "x1: " << x1 << std::endl;
+
+
+    decltype( x ) px1x2( x.size() );
+    std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), px1x2.begin() );
+
+    std::cerr << "px1x2: " << px1x2 << std::endl;
 
     return 0;
 }

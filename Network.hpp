@@ -30,8 +30,7 @@ feed( const Network & network, const Biases & biases, const std::pair< IT, OT > 
 {
     static ActivationFunction ac;
 
-    std::cerr << std::endl;
-    std::cerr << "data_sample:\n" << data_sample << std::endl;
+    //    std::cerr << std::endl; std::cerr << "data_sample:\n" << data_sample << std::endl;
 
     typedef std::vector< /* Layer */ std::vector< OT /* Neuron */ > >  NetworkResult;
 
@@ -54,12 +53,17 @@ feed( const Network & network, const Biases & biases, const std::pair< IT, OT > 
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++ k ) { // Loop over weights
                 sum += network_result[ i - 1 ][ k ] * network[ i ][ j ][ k ];
             }
-            sum += biases[ i ][ j ];
-            network_result[ i ][ j ] = ac( sum );
+            // Last layer
+            if ( i == network.size() - 1 ) {
+                network_result[ i ][ j ] = sum;
+            }
+            else {
+                sum += biases[ i ][ j ];
+                network_result[ i ][ j ] = ac( sum );
+            }
         }
     }
-    std::cerr << "network_result:\n" << network_result << std::endl;
-    std::cerr << std::endl;
+    //    std::cerr << "network_result:\n" << network_result << std::endl; std::cerr << std::endl;
 
     return std::move( network_result );
 }
@@ -70,7 +74,7 @@ OT
 output_gradient( const OT & obtained, const OT & desired )
 {
     static ActivationFunctionDerivative acd;
-//    return acd( obtained ) * ( desired - obtained );
+    //    return acd( obtained ) * ( desired - obtained );
     std::cerr << "desired: " << desired << std::endl;
     std::cerr << "obtained: " << obtained << std::endl;
     OT gradient = acd( obtained ) * ( desired - obtained );
@@ -111,8 +115,7 @@ Deltas calculate_new_deltas( const Network & network,
         deltas.back() = error_gradient;
     }
 
-    for ( std::size_t i = deltas.size() - 2; i > 0; -- i ) {
-        //        std::cerr << std::endl;
+    for ( std::size_t i = network.size() - 2; i > 0; -- i ) {
         for ( std::size_t j = 0; j < network[ i ].size(); ++ j ) {
             double sum = 0.0;
             for ( std::size_t k = 0; k < network[ i + 1 ].size(); ++ k ) {
@@ -122,7 +125,7 @@ Deltas calculate_new_deltas( const Network & network,
         }
     }
 
-    std::cerr << "deltas: " << deltas << std::endl;
+    //    std::cerr << "deltas: " << deltas << std::endl;
 
     return std::move( deltas );
 }
@@ -165,7 +168,7 @@ backpropagation( const Network & network,
         }
     }
 
-    std::cerr << "new_weight_deltas:\n" << new_weight_deltas << std::endl;
+    //    std::cerr << "new_weight_deltas:\n" << new_weight_deltas << std::endl;
 
     return std::move( std::make_tuple( new_weight_deltas, prev_biases_deltas ) );
 }
@@ -226,6 +229,8 @@ inline
 Network
 update_weights( const Network & network, const WeightDeltas & weight_deltas )
 {
+    //    std::cerr << "network:\n" << network << std::endl;
+    //    std::cerr << "weight_deltas:\n" << weight_deltas << std::endl;
     Network new_network = network;
     for ( std::size_t i = 0; i < network.size(); ++ i ) {
         // Layer
@@ -233,10 +238,11 @@ update_weights( const Network & network, const WeightDeltas & weight_deltas )
             // Neuron
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++k ) {
                 // weight
-                new_network[ i ][ j ][ k ] -= weight_deltas[ i ][ j ][ k ];
+                new_network[ i ][ j ][ k ] += weight_deltas[ i ][ j ][ k ];
             }
         }
     }
+    //    std::cerr << "new_network:\n" << new_network << std::endl;
     return std::move( new_network );
 }
 
@@ -248,7 +254,7 @@ update_biases( const Biases & biases, const BiasesDeltas & biases_deltas )
     Biases new_biases = biases;
     for ( std::size_t i = 0; i < biases.size(); ++ i ) {
         for ( std::size_t j = 0; j < biases[ i ].size(); ++ j ) {
-            new_biases[ i ][ j ] -= biases_deltas[ i ][ j ];
+            new_biases[ i ][ j ] += biases_deltas[ i ][ j ];
         }
     }
     return std::move( new_biases );
@@ -283,10 +289,10 @@ network( const std::vector< unsigned int > & layers_description,
     Biases biases = std::move( std::get<2>(init_network_weight_bias_biases) );
     BiasesDeltas biases_deltas = std::move( std::get<3>(init_network_weight_bias_biases) );
 
-    std::cerr << "network:\n" << network << std::endl;
-    std::cerr << "weight_deltas:\n" << weight_deltas << std::endl;
-    std::cerr << "biases:\n" << biases << std::endl;
-    std::cerr << "biases_deltas:\n" << biases_deltas << std::endl;
+    //    std::cerr << "network:\n" << network << std::endl;
+    //    std::cerr << "weight_deltas:\n" << weight_deltas << std::endl;
+    //    std::cerr << "biases:\n" << biases << std::endl;
+    //    std::cerr << "biases_deltas:\n" << biases_deltas << std::endl;
 
 
     //        /*
@@ -297,10 +303,10 @@ network( const std::vector< unsigned int > & layers_description,
         if ( max_epoch == epoch_counter++ ) break;
         //        std::cerr << "epoch_counter: " << epoch_counter << std::endl;
 
-        auto init_network_weight_bias_biases = init_network( layers_description, training_dataset );
-        weight_deltas = std::move( std::get<1>(init_network_weight_bias_biases) );
-        biases = std::move( std::get<2>(init_network_weight_bias_biases) );
-        biases_deltas = std::move( std::get<3>(init_network_weight_bias_biases) );
+        //        auto init_network_weight_bias_biases = init_network( layers_description, training_dataset );
+        //        weight_deltas = std::move( std::get<1>(init_network_weight_bias_biases) );
+        //        biases = std::move( std::get<2>(init_network_weight_bias_biases) );
+        //        biases_deltas = std::move( std::get<3>(init_network_weight_bias_biases) );
 
         double epoch_error = 0.0;
 
@@ -326,7 +332,7 @@ network( const std::vector< unsigned int > & layers_description,
             const auto network_result = feed< IT, OT, ActivationFunction >( network, biases, data_sample );
 
             const double error = std::pow( (network_result.back()[ 0 ] - data_sample.second), 2.0 );
-            std::cerr << "error: " << error << std::endl;
+            //            std::cerr << "error: " << error << std::endl;
             epoch_error += error;
 
             // Back propagation
@@ -334,15 +340,15 @@ network( const std::vector< unsigned int > & layers_description,
             weight_deltas = std::move( std::get<0>( weight_bias_deltas ) );
             biases_deltas = std::move( std::get<1>( weight_bias_deltas ) );
 
-            //            network = update_weights( network, weight_deltas );
-            //            biases = update_biases( biases, biases_deltas );
+            //                        network = update_weights( network, weight_deltas );
+            //                        biases = update_biases( biases, biases_deltas );
 
         }
 
         epoch_error /= training_dataset.size();
 
 
-        if ( (epoch_error <= desired_accuracy) /*|| ( epoch_error > prev_err )*/ ) {
+        if ( (epoch_error <= desired_accuracy) || ( epoch_error > prev_err ) ) {
             std::cerr << "Achieved accuracy: " << epoch_error << std::endl;
             break;
         }
@@ -354,6 +360,7 @@ network( const std::vector< unsigned int > & layers_description,
         biases = update_biases( biases, biases_deltas );
 
     }
+    std::cerr << std::endl; std::cerr << "epoch_counter: " << epoch_counter << std::endl; std::cerr << std::endl;
     //        */
 
     // Evaluation
