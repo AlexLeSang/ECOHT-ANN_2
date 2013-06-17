@@ -12,6 +12,11 @@
 #include "Network.hpp"
 
 
+auto generate_range = []( const double start, const double step, int & i ) {
+    return start + step * i++;
+};
+
+
 int main() {
 
     /* Sin X
@@ -71,28 +76,132 @@ int main() {
                                                                               training_dataset, training_dataset, 1e-4, 9000, 0.9, 0.1 );
     */
 
-    constexpr unsigned int number_of_points = 20;
-    constexpr double a = 0.0;
-    constexpr double b = 1.0;
-    constexpr double step = ( b - a ) / (number_of_points - 1);
+    //    constexpr unsigned int number_of_points = 20;
+    //    constexpr double a = 0.0;
+    //    constexpr double b = 1.0;
+    //    constexpr double step = ( b - a ) / (number_of_points - 1);
 
-    std::vector< double > x( number_of_points );
-    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
-        x[ i ] = step * i;
+    //    std::vector< double > x( number_of_points );
+    //    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
+    //        x[ i ] = step * i;
+    //    }
+
+    //    std::cerr << "x: " << x << std::endl;
+
+    //    std::vector< double > x1( number_of_points );
+    //    std::generate( x1.begin(), x1.end(), std::bind( []( const double step, int & i ) {return step * 2 * i++;}, step, 0 ) );
+    //    std::cerr << "x1: " << x1 << std::endl;
+
+
+    //    const auto res = std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), 0 );
+
+    //    std::cerr << "res: " << res << std::endl;
+
+
+    const auto X1 = linspace( 0.0, 0.5, 10 );
+    const auto X2 = linspace( 0.0, 0.5, 10 );
+
+    auto xx_yy = meshgrid( X1, X2 );
+    const auto xx = std::move( std::get<0>( xx_yy ) );
+    const auto yy = std::move( std::get<1>( xx_yy ) );
+
+    const auto sin_xx_col = feval( []( const double & v ) { return std::sin(v); }, colon(xx) );
+
+    const auto sin_yy_col = feval( []( const double & v ) { return std::sin(v); }, colon(yy) );
+
+    const auto Y_train = dot_operator( sin_xx_col, sin_yy_col, std::multiplies< double >() );
+
+    auto train_inp = merge( colon(xx), colon(yy) );
+    auto train_out = Y_train;
+
+    const auto mu_inp = mean( train_inp );
+    const auto sigma_inp = stand( train_inp );
+
+    /* Stand dev test
+    const auto x1 = range( 1.0, 1.0, 5.0 );
+    const auto std_dev = stand( x1 );
+    std::cerr << "std_dev: " << std_dev << std::endl;
+    const auto x2 = range( 4.0, 2.0, 12.0 );
+    const auto y = merge_to_vector( x1, x2 );
+    std::cerr << "y: " << y << std::endl;
+    const auto y_std_dev = stand( y );
+    std::cerr << "y_std_dev: " << y_std_dev << std::endl;
+    */
+
+    // train_inp = (train_inp(:,:) - mu_inp(:,1)) / sigma_inp(:,1);
+    /*
+    {
+        // train_inp(:,:) - mu_inp(:,1)
+        auto new_train_input = train_inp;
+        std::for_each( new_train_input.begin(), new_train_input.end(), [&]( decltype( new_train_input )::reference v ) {
+            std::for_each( v.begin(), v.end(), [&]( std::remove_reference < decltype(v) >::type::reference t ) {
+                t -= mu_inp[0];
+            } );
+        } );
+        // (train_inp(:,:) - mu_inp(:,1)) / sigma_inp(:,1);
+        std::for_each( new_train_input.begin(), new_train_input.end(), [&]( decltype( new_train_input )::reference v ) {
+            std::for_each( v.begin(), v.end(), [&]( std::remove_reference < decltype(v) >::type::reference t ) {
+                t /= sigma_inp[0];
+            } );
+        } );
+
+        train_inp = new_train_input;
     }
+    */
+    train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-    std::cerr << "x: " << x << std::endl;
+    /* Operator test
 
-    std::vector< double > x1( number_of_points );
-
-    std::generate( x1.begin(), x1.end(), std::bind( []( const double step, int & i ) {return step * i++;}, step, 0 ) );
+    const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
+    const auto mutated_x1_minus = x1 - 2.0;
+    std::cerr << "mutated_x1_minus: " << mutated_x1_minus << std::endl;
+    const auto mutated_x1_plus = mutated_x1_minus + 2.0;
+    std::cerr << "mutated_x1_plus: " << mutated_x1_plus << std::endl;
+    const auto mutated_x1_mul = mutated_x1_plus * 2.0;
+    std::cerr << "mutated_x1_mul: " << mutated_x1_mul << std::endl;
+    const auto mutated_x1_div = mutated_x1_mul / 2.0;
+    std::cerr << "mutated_x1_div: " << mutated_x1_div << std::endl;
+
+    const auto y = merge_to_vector( x1, x1 );
+    std::cerr << "y: " << y << std::endl;
+    const auto y_plus = y + 2.0;
+    std::cerr << "y_plus: " << y_plus << std::endl;
+    const auto y_minus = y_plus - 2.0;
+    std::cerr << "y_minus: " << y_minus << std::endl;
+    const auto y_mul = y_minus * 2.0;
+    std::cerr << "y_mul: " << y_mul << std::endl;
+    const auto y_div = y_minus / 2.0;
+    std::cerr << "y_div: " << y_div << std::endl;
+
+    */
+
+    const auto mu_out = mean( train_out );
+    const auto sigma_out = stand( train_out );
+    train_out = ( train_out - mu_out ) / sigma_out;
+
+    const auto patterns = size( train_inp ).first;
+//    std::cerr << "patterns: " << patterns << std::endl;
+
+    /* Ones test
+    const auto b = ones( 5 );
+    std::cerr << "b: " << b << std::endl;
+     */
+
+    auto bias = ones( patterns );
+    train_inp = merge( train_inp, bias );
+//    std::cerr << "train_inp: " << train_inp << std::endl;
+
+    const auto inputs = size( train_inp ).second;
+//    std::cerr << "inputs: " << inputs << std::endl;
 
 
-    decltype( x ) px1x2( x.size() );
-    std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), px1x2.begin() );
+    const auto earlystop = false;
+    const auto reset = false;
+    const auto hlr = 0.5;
 
-    std::cerr << "px1x2: " << px1x2 << std::endl;
+//    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
+//    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
 
     return 0;
 }
