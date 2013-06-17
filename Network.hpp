@@ -2,6 +2,7 @@
 #define NETWORK_HPP
 
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <functional>
 #include <utility>
@@ -24,7 +25,8 @@ typedef std::vector< /* Layer */ std::vector< /* Neuron */ double > > BiasesDelt
 
 struct SigmoidFunction {
     inline double operator() ( const double t ) const {
-        return ( 1.0/( 1.0 + exp(-t) ) );
+//        return ( 1.0/( 1.0 + exp(-t) ) );
+        return tanh( t );
     }
 };
 
@@ -222,7 +224,7 @@ void update_weights( Network & network, const WeightDeltas & weight_deltas )
             // Neuron
             for ( std::size_t k = 0; k < network[ i ][ j ].size(); ++k ) {
                 // weight
-                network[ i ][ j ][ k ] -= weight_deltas[ i ][ j ][ k ];
+                network[ i ][ j ][ k ] += weight_deltas[ i ][ j ][ k ];
                 /*
                 std::cerr << "network[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << network[ i ][ j ][ k ] << std::endl;
                 std::cerr << "weight_deltas[ " << i << " ][ " << j << " ][ " <<  k  << " ]: " << weight_deltas[ i ][ j ][ k ] << std::endl;
@@ -240,7 +242,7 @@ void update_biases( Biases & biases, const BiasesDeltas & biases_deltas )
 {
     for ( std::size_t i = 0; i < biases.size(); ++ i ) {
         for ( std::size_t j = 0; j < biases[ i ].size(); ++ j ) {
-            biases[ i ][ j ] -= biases_deltas[ i ][ j ];
+            biases[ i ][ j ] += biases_deltas[ i ][ j ];
         }
     }
 }
@@ -279,10 +281,30 @@ network( const std::vector< unsigned int > & layers_description,
         if ( max_epoch == epoch_counter++ ) break;
 //        std::cerr << "epoch_counter: " << epoch_counter << std::endl;
 
+        auto init_network_weight_bias_biases = init_network( layers_description, training_dataset );
+        weight_deltas = std::move( std::get<1>(init_network_weight_bias_biases) );
+        biases = std::move( std::get<2>(init_network_weight_bias_biases) );
+        biases_deltas = std::move( std::get<3>(init_network_weight_bias_biases) );
+
         double epoch_error = 0.0;
+
+        // Randomly pick a pattern
+//        std::list< unsigned int > picked_list;
 
         for ( size_t dataIndex = 0; dataIndex < training_dataset.size(); ++ dataIndex )
         {
+//        while( picked_list.size() < training_dataset.size() ) {
+//            bool picked = true;
+//            unsigned int dataIndex;
+//            while ( picked ) {
+//                dataIndex = rand() % training_dataset.size();
+//                if ( picked_list.cend() == std::find( picked_list.cbegin(), picked_list.cend(), dataIndex ) ) {
+//                    picked = false;
+//                    picked_list.push_back( dataIndex );
+//                }
+//            }
+//            std::cerr << "dataIndex: " << dataIndex << std::endl;
+
             // Feed forward
             const std::pair< IT, OT > & data_sample = training_dataset.at( dataIndex );
             const auto network_result = feed( network, biases, data_sample );
@@ -295,20 +317,23 @@ network( const std::vector< unsigned int > & layers_description,
             auto weight_bias_deltas = backpropagation( network, weight_deltas, biases_deltas, network_result, data_sample, momentum, learning_rate );
             weight_deltas = std::move( std::get<0>( weight_bias_deltas ) );
             biases_deltas = std::move( std::get<1>( weight_bias_deltas ) );
+
+            update_weights( network, weight_deltas );
+            update_biases( biases, biases_deltas );
         }
 
         epoch_error /= training_dataset.size();
 
 
-        if ( (epoch_error <= desired_accuracy) || ( epoch_error > prev_err ) ) {
+        if ( (epoch_error <= desired_accuracy) /*|| ( epoch_error > prev_err )*/ ) {
             std::cerr << "Achieved accuracy: " << epoch_error << std::endl;
             break;
         }
         std::cerr << "epoch_error: " << epoch_error << std::endl;
         prev_err = epoch_error;
 
-        update_weights( network, weight_deltas );
-        update_biases( biases, biases_deltas );
+//        update_weights( network, weight_deltas );
+//        update_biases( biases, biases_deltas );
 
     }
     //        */

@@ -46,8 +46,8 @@ int main() {
     //    std::cerr << "training_res: " << training_res.size() << ":: " << training_res << std::endl;
     //    std::cerr << "testing_res: " << testing_res.size() << ":: " << testing_res << std::endl;
 
-    const std::vector< unsigned int > layers_description = { 1, 35, 1 };
-    network( layers_description, training_res, testing_res, 1e-2, 6000, 0.06, 0.001 );
+    const std::vector< unsigned int > layers_description = { 1, 5, 5, 5, 1 };
+    network( layers_description, training_res, testing_res, 1e-2, 3000, 0.01, 0.0001 );
 
     /*
     {
