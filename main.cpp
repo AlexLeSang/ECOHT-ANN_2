@@ -151,8 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-    /* Operator test
-
+//    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -164,7 +163,7 @@ int main() {
     const auto mutated_x1_div = mutated_x1_mul / 2.0;
     std::cerr << "mutated_x1_div: " << mutated_x1_div << std::endl;
 
-    const auto y = merge_to_vector( x1, x1 );
+    const auto y = merge( x1, x1 );
     std::cerr << "y: " << y << std::endl;
     const auto y_plus = y + 2.0;
     std::cerr << "y_plus: " << y_plus << std::endl;
@@ -175,7 +174,17 @@ int main() {
     const auto y_div = y_minus / 2.0;
     std::cerr << "y_div: " << y_div << std::endl;
 
-    */
+
+    const std::vector< double > x = { 2, 3, 4 };
+    const auto one_m_x = 1.0 - x;
+    std::cerr << "one_m_x: " << one_m_x << std::endl;
+    const auto one_p_x = 1.0 + x;
+    std::cerr << "one_p_x:" << one_p_x << std::endl;
+    const auto two_mul_x1 = 2.0 * x;
+    std::cerr << "two_mul_x1: " << two_mul_x1 << std::endl;
+
+    exit( -1 );
+//    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
