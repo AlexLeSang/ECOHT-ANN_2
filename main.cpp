@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-//    /* Operator test
+    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -219,7 +219,7 @@ int main() {
     std::cerr << "va_m_y_div: " << va_m_y_div << std::endl;
 
     exit( -1 );
-//    */
+    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
@@ -290,7 +290,7 @@ int main() {
     //std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
     //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
-    epochs = 4;
+    epochs = 400;
     std::vector< long double > err(epochs);
 
     for( std::size_t i = 0; i < epochs; ++i ) {
@@ -300,7 +300,7 @@ int main() {
 //        std::cerr << "blr: " << blr << std::endl;
 
         for( std::size_t j = 0; j < patterns; ++j ){
-            const auto patnum = 84;//(static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
+            const auto patnum = (static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
            //std::cerr << "patnum: " << patnum << std::endl;
             const auto this_pat = train_inp[ patnum ];
             //std::cerr << "this_pat: " << this_pat << std::endl;

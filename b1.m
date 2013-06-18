@@ -87,11 +87,11 @@ wih = [ -0.0621970,    -0.1586820,    0.01842900,    -0.1575190,    -0.0466730, 
 %weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 %weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
 
-weight_input_hidden = (wih - 0.5)/10;
-weight_hidden_output = (who - 0.5)/10;
+  weight_input_hidden = (wih - 0.5)/10;
+  weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-epochs = 4;
+epochs = 400;
 %do a number of epochs
 for iter = 1:epochs 
     
@@ -104,14 +104,13 @@ for iter = 1:epochs
     for j = 1:patterns
         
         %select a random pattern
-        patnum = round((fake_rand(j) * patterns) + 0.5);
+        patnum = round((rand * patterns) + 0.5);
         if patnum > patterns
             patnum = patterns;
         elseif patnum < 1
             patnum = 1;    
         end
-	patnum = 85;
-        %set the current pattern
+	%set the current pattern
         this_pat = train_inp(patnum,:);
         act = train_out(patnum,1);
         
@@ -143,8 +142,9 @@ for iter = 1:epochs
     pred = weight_hidden_output*p1;
 
     error = pred' - train_out;
-    err(iter) =  (sum(error.^2))^0.5
+    err(iter) =  (sum(error.^2))^0.5;
         
+       
     
     %reset weights if requested
 %      if reset
@@ -167,8 +167,6 @@ for iter = 1:epochs
 %      end
        
 end
-exit(-1)
-
 
 %% Testing
 X3 = linspace(0.2,0.8,10)';
