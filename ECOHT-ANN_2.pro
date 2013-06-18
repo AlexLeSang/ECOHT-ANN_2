@@ -5,10 +5,12 @@ CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++11
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    Preprocessor.cpp
 
 HEADERS += \
     Network.hpp \
-    Utils.hpp
+    Utils.hpp \
+    Preprocessor.hpp
 
 #DEFINES += "FAKE_RAND"
