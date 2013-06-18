@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-//    /* Operator test
+    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -183,8 +183,20 @@ int main() {
     const auto two_mul_x1 = 2.0 * x;
     std::cerr << "two_mul_x1: " << two_mul_x1 << std::endl;
 
+    const std::vector< double > a1 = { 2 };
+    const std::vector< double > a2 = { 3 };
+    const std::vector< double > a3 = { 4 };
+    const auto a12 = merge( a1, a2 );
+    const auto a = merge( a12, a3 );
+    std::cerr << "a: " << a << std::endl;
+    const std::vector< double > b = { 5, 6, 7 };
+    std::cerr << "b: " << b << std::endl;
+    const auto aTb = a * b;
+    std::cerr << "aTb: " << aTb << std::endl;
+
+
     exit( -1 );
-//    */
+    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
