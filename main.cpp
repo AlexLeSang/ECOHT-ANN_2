@@ -96,7 +96,7 @@ int main() {
     //    const auto res = std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), 0 );
 
     //    std::cerr << "res: " << res << std::endl;
-    const std::size_t hidden_neurons = 4;
+    const std::size_t hidden_neurons = 30;
     const std::size_t epochs = 500;
 
     const auto X1 = linspace( 0.0, 0.5, 10 );
@@ -212,15 +212,15 @@ int main() {
 
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
-#ifdef FAKE_RAND
 
-#else
+
+
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
-#endif
 
-  //  std::cerr << weight_hidden_output << weight_input_hidden ;
-//    {
+
+    //std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
+//   {
 //        auto a = randn( 100 );
 //        std::cerr << a;
 
