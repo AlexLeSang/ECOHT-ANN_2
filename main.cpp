@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-//    /* Operator test
+    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -213,7 +213,7 @@ int main() {
     std::cerr << "y_d_d_10: " << y_d_d_10 << std::endl;
 
     exit( -1 );
-//    */
+    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
@@ -319,15 +319,19 @@ int main() {
             const auto delta_HO = hval * error * blr;
             //std::cerr << "delta_HO: " << delta_HO << std::endl;
             weight_hidden_output = weight_hidden_output - delta_HO;
-            //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+            std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
             //delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
-            const auto m1 = 1.0 - (hval^2);
+            const auto m1 = weight_hidden_output * alr * error;
             //std::cerr << "m1: " << m1 << std::endl;
-            const auto m2 = m1 * this_pat;
-            std::cerr << "m2: " << m2 << std::endl;
-            exit( -1 );
-            const auto delta_IH =  weight_hidden_output * alr * error * m2;
+            const auto m2 = 1.0 - (hval^2);
+            //std::cerr << "m3: " << m3 << std::endl;
+            const auto m3 = dot_operator( m1, m2, std::multiplies< double >());
+            std::cerr << "m3: " << m3 << std::endl;
+            const auto m4 = vec_to_vecvec( m3 );
+            const auto delta_IH =  m4 * this_pat;
             std::cerr << "delta_IH: " << delta_IH << std::endl;
+
+            exit( -1 );
 
         }
     }

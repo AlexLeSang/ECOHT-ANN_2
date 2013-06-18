@@ -546,7 +546,7 @@ operator * ( const std::vector< std::vector < T > > & vv, const std::vector< T >
     for ( std::size_t i = 0; i < res.size(); ++ i ) {
         std::vector< T > v1 = v;
         std::for_each( v1.begin(), v1.end(), [&]( double & val ) {
-            val = val * vv[ 0 ][ i ];
+            val = val * vv[ i ][ 0 ];
         } );
         res[ i ] = std::move( v1 );
     }
