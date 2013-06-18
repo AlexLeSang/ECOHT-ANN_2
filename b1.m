@@ -24,8 +24,8 @@ epochs = 700;
 
 % ------- load in the data -------
 
-X1 = linspace(0,0.5,10); %input
-X2 = linspace(0,0.5,10); %input
+X1 = linspace(0,1.0,10); %input
+X2 = linspace(0,1.0,10); %input
 
 [xx yy] = meshgrid(X1, X2);
 
@@ -183,6 +183,8 @@ X4 = linspace(0.2,0.8,10)';
 
 train_test = [xx1(:) yy1(:)];
 
+test_out = sin(xx1(:)).*sin(yy1(:));
+
 mu_test = mean(train_test);
 sigma_test = std(train_test);
 train_test = (train_test(:,:) - mu_test(:,1)) / sigma_test(:,1);
@@ -194,7 +196,7 @@ pred = weight_hidden_output*tanh(train_test*weight_input_hidden)';
 
 % Finish
 % fprintf('state after %d epochs\n',iter);
-  a = (train_out* sigma_out(:,1)) + mu_out(:,1);
+  a = (test_out* sigma_out(:,1)) + mu_out(:,1);
   b = (pred'* sigma_out(:,1)) + mu_out(:,1);
   act_pred_err = [a b b-a]  %display actual,predicted & error
   figure
