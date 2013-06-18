@@ -264,6 +264,7 @@ int main() {
             //std::cerr << "tanhxx: " << tanhxx ;
             std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
             const auto hval = tanhxx;
+            std::cerr << "hval: " << hval << std::endl;
             //std::cerr << "hval: " << hval;
             // TODO check hval
 
