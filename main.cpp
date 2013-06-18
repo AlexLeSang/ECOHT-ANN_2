@@ -42,7 +42,6 @@ training(const std::size_t hidden_neurons,
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5l ) / 10.0l;
 
     for( std::size_t i = 0; i < epochs; ++i ) {
-
         if ( *reset ) {
             break;
         }
@@ -105,8 +104,8 @@ int main() {
     volatile auto reset = false;
     const long double hlr = 0.32;
 
-    const auto X1 = linspace( 0.0l, 1.0l, 15 );
-    const auto X2 = linspace( 0.0l, 1.0l, 15 );
+    const auto X1 = linspace( 0.0l, 1.0l, 7 );
+    const auto X2 = linspace( 0.0l, 1.0l, 7 );
 
     const auto X3 = linspace( 0.0l, 1.0l, 15 );
     const auto X4 = linspace( 0.0l, 1.0l, 15 );

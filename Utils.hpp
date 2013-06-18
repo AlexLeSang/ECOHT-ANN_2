@@ -45,7 +45,6 @@ operator << ( std::ostream & os, const std::vector< std::vector <T> > & vector )
 }
 
 
-
 template < typename T, typename U >
 inline
 std::ostream &
@@ -54,7 +53,6 @@ operator << ( std::ostream & os, const std::pair< T, U> & p )
     os << "<" << std::get<0>( p ) << " : " << std::get<1>( p ) << ">";
     return os;
 }
-
 
 long double rand_range( const long double min, const long double max ) {
     static bool seeded = false;
@@ -95,8 +93,6 @@ merge_to_pair( const std::vector<T> & vector_t, const std::vector<U> & vector_u 
     return std::move(result);
 }
 
-//template < typename T > inline std::vector< std::vector<T> > merge( const std::vector< std::vector <T> > & vector_t, const std::vector<T> & vector_u );
-
 template < typename T >
 inline
 std::vector< std::vector< T > >
@@ -126,39 +122,25 @@ merge( const std::vector< std::vector <T> > & vector_t, const std::vector<T> & v
     return std::move( result );
 }
 
-
 template < typename T >
 inline
 std::tuple< std::vector< T >/*Training*/, std::vector<T>/*Testing*/ >
 split( const std::vector< T > & dataset, const std::tuple< const long double, const long double > & distribution ) {
     assert( std::get<0>( distribution ) >= 0.0 );
     assert( std::get<0>( distribution ) <= 1.0 );
-
     assert( std::get<1>( distribution ) >= 0.0 );
     assert( std::get<1>( distribution ) <= 1.0 );
-
     assert( std::fabs( (std::get<0>( distribution ) + std::get<1>( distribution ) ) ) - 1.0 < 1e-8 );
-
     std::tuple< std::vector<T>/*Training*/, std::vector<T>/*Testing*/ > result;
-
     std::vector<T> & training_result = std::get<0>( result );
     std::vector<T> & testing_result = std::get<1>( result );
-
-
     const long double & training_rate = std::get<0>( distribution );
     const long double & testing_rate = std::get<1>( distribution );
-
-    //        std::cerr << "training_rate: " << training_rate << std::endl;
-    //        std::cerr << "testing_rate: " << testing_rate << std::endl;
-
     const unsigned int testing_index = std::ceil( 1.0 / testing_rate );
     const unsigned int training_index = std::ceil( 1.0 / training_rate );
-
-
     unsigned int index_for_check;
     std::vector<T> * smaller_insertion_result;
     std::vector<T> * bigger_insertion_result;
-
     if ( testing_rate < training_rate ) {
         index_for_check = testing_index;
         smaller_insertion_result = & testing_result;
@@ -169,19 +151,14 @@ split( const std::vector< T > & dataset, const std::tuple< const long double, co
         smaller_insertion_result = & training_result;
         bigger_insertion_result = & testing_result;
     }
-
-    for ( unsigned int i = 0; i < dataset.size(); ++ i ) {
-
+    for ( std::size_t i = 0; i < dataset.size(); ++ i ) {
         const bool split_condition = ((i % index_for_check) == 0);
-
         if ( split_condition ) {
             smaller_insertion_result->push_back( dataset.at( i ) );
             continue;
         }
-
         bigger_insertion_result->push_back( dataset.at( i ) );
     }
-
     return std::move( result );
 }
 
@@ -232,7 +209,6 @@ linspace( const T from, const T to, const std::size_t n_points )
     static auto generate_range = []( const long double start, const long double step, int & i ) {
         return start + step * i++;
     };
-
     std::vector< T > result( n_points );
     const T step = ( to - from )/( n_points - 1 );
     std::generate( result.begin(), result.end(), std::bind( generate_range, from, step, 0 ) );
@@ -247,9 +223,7 @@ range( const T from, const T step, const T to )
     static auto generate_range = []( const long double start, const long double step, int & i ) {
         return start + step * i++;
     };
-
     const std::size_t n_points = (to - from)/( step ) + 1;
-
     std::vector< T > result( n_points );
     std::generate( result.begin(), result.end(), std::bind( generate_range, from, step, 0 ) );
     return std::move( result );
@@ -303,7 +277,6 @@ feval( F op, const std::vector< std::vector< T > > & arg1 )
     const auto sp = size( arg1 );
     std::vector< std::vector< T > > res = arg1;
     for ( std::size_t i = 0; i < sp.first; ++ i ) {
-//        std::for_each( res[ i ].begin(), res[ i ].end(), op );
         for ( std::size_t j = 0; j < sp.second; ++ j ) {
             res[ i ][ j ] = op( arg1[ i ][ j ] );
         }
@@ -875,8 +848,6 @@ std::cerr << "va_m_y_div: " << va_m_y_div << std::endl;
 exit( -1 );
     */
 
-
-
 /* Ones test
 const auto b = ones( 5 );
 std::cerr << "b: " << b << std::endl;
@@ -890,7 +861,6 @@ std::cerr << "z: " << z << std::endl;
 const auto zz = zeros( 5, 5 );
 std::cerr << "zz: " << zz << std::endl;
 */
-
 
 /* Inner prod test
 const std::vector< double > a = { 1, 2, 3 };
