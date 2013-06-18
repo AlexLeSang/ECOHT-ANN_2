@@ -34,7 +34,10 @@ void Facade::processFinished()
  */
 QVector< long double >  Facade::getErrors() const
 {
-    return networkRef.getTrainingError();
+    const auto err = networkRef.getTrainingError();
+    QVector< long double > qe( err.size() );
+    std::copy( err.cbegin(), err.cend(), qe.begin() );
+    return qe;
 }
 
 
@@ -91,25 +94,42 @@ void Facade::setOutputFileName(const QString fileName)
         std::cerr << e.what() << std::endl;
         return;
     }
-    // TODO
+    // TODO save to file
 //    preprocessorRef.saveFile( d );
 }
 
-void Facade::setNumberOfNeurons(const quint32 & val)
+void Facade::setNumberOfNeurons(const int val)
 {
     networkRef.setNumberOfNeurons( val );
-    emit sendNumberOfNeurons( val );
 }
 
 void Facade::startProcess()
 {
-    // TODO get data, split and set to network
+    const auto data = preprocessorRef.getData();
+    const auto & x1 = data[ 0 ];
+    const auto & x2 = data[ 1 ];
+    const auto & y = data[ 2 ];
 
-//    networkRef.setTrainingData( trainingData );
-//    networkRef.setTrainigResult( trainingResult );
+    const auto input = merge( x1, x2 );
 
-//    networkRef.setTestingData( testingData );
-//    networkRef.setTestingResult( testingResult );
+    const auto training_testing_data = split( input, std::make_tuple( 0.6, 0.4 ) );
+
+    const auto & trainingData = std::get<0>( training_testing_data );
+    const auto & testingData = std::get<1>( training_testing_data );
+
+    const auto test_training_result = split( y, std::make_tuple( 0.6, 0.4 ) );
+    const auto & trainingResult = std::get<0>( test_training_result );
+    const auto & testingResult = std::get<1>( test_training_result );
+
+
+    Q_ASSERT( trainingData.size() == trainingResult.size() );
+    Q_ASSERT( testingData.size() == testingData.size() );
+
+    networkRef.setTrainingData( trainingData );
+    networkRef.setTrainigResult( trainingResult );
+
+    networkRef.setTestingData( testingData );
+    networkRef.setTestingResult( testingResult );
 
     QThreadPool::globalInstance()->start( &networkRef );
 }

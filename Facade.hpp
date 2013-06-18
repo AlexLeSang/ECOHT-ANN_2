@@ -25,7 +25,7 @@ public slots:
     void setAlhpa( double val );
     void setAccuracy( double val );
     void setMaxNumberOfEpoh( int val );
-    void setNumberOfNeurons( const quint32 & val );
+    void setNumberOfNeurons(const int val );
     void setTrainingDataPercent(int val);
 
     void setInputFileName( const QString fileName );
@@ -36,7 +36,6 @@ public slots:
 
 signals:
     void processEnd();
-    void sendNumberOfNeurons( const quint32 & val );
 
 private:
     Facade();

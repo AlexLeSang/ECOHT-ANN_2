@@ -84,7 +84,6 @@ int main() {
         const auto training_error = std::get<2>(training_result);
 
         const auto testing_result = eval(train_test, weight_hidden_output, weight_input_hidden);
-
         const auto testing_error = test_error(test_out, testing_result, train_out);
     }
 

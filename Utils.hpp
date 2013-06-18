@@ -54,7 +54,7 @@ operator << ( std::ostream & os, const std::pair< T, U> & p )
     return os;
 }
 
-long double rand_range( const long double min, const long double max ) {
+inline long double rand_range( const long double min, const long double max ) {
     static bool seeded = false;
     if ( !seeded ) {
         srand( time(NULL) );
@@ -643,9 +643,6 @@ zeros ( const std::size_t n, const std::size_t n1 )
 }
 
 
-// TODO dot product
-//Use dot_operator for that
-
 template< typename T >
 inline
 T
@@ -675,8 +672,7 @@ operator * ( const std::vector< T > & v1, const std::vector< std::vector< T > > 
     return std::move( column_result );
 }
 
-// TODO rand
-long double randd()
+inline long double randd()
 {
 #ifndef FAKE_RAND
     return rand_range( 0.0, 1.0 );

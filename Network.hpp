@@ -9,6 +9,9 @@
 
 #include <QRunnable>
 
+#include "ANNetwork.hpp"
+
+
 /*!
  * \brief The Network class
  */
@@ -51,29 +54,29 @@ public:
     }
 
 
-    QVector<long double> getTrainigResult() const;
-    void setTrainigResult(const QVector<long double> &value);
+    std::vector<long double> getTrainigResult() const;
+    void setTrainigResult(const std::vector<long double> &value);
 
-    QVector<QVector<long double> > getTrainingData() const;
-    void setTrainingData(const QVector<QVector<long double> > &value);
+    std::vector<std::vector<long double> > getTrainingData() const;
+    void setTrainingData(const std::vector<std::vector<long double> > &value);
 
-    QVector<long double> getTestingResult() const;
-    void setTestingResult(const QVector<long double> &value);
+    std::vector<long double> getTestingResult() const;
+    void setTestingResult(const std::vector<long double> &value);
 
-    QVector<QVector<long double> > getTestingData() const;
-    void setTestingData(const QVector<QVector<long double> > &value);
+    std::vector<std::vector<long double> > getTestingData() const;
+    void setTestingData(const std::vector<std::vector<long double> > &value);
 
-    QVector<long double> getObtainedTestingResult() const;
-    void setObtainedTestingResult(const QVector<long double> &value);
+    std::vector<long double> getObtainedTestingResult() const;
+    void setObtainedTestingResult(const std::vector<long double> &value);
 
-    QVector<long double> getTestingError() const;
-    void setTestingError(const QVector<long double> &value);
+    std::vector<long double> getTestingError() const;
+    void setTestingError(const std::vector<long double> &value);
 
-    QVector<long double> getTrainingError() const;
-    void setTrainingError(const QVector<long double> &value);
+    std::size_t getNumberOfNeurons() const;
+    void setNumberOfNeurons(const std::size_t &value);
 
-    quint32 getNumberOfNeurons() const;
-    void setNumberOfNeurons(const quint32 &value);
+    std::vector<long double> getTrainingError() const;
+    void setTrainingError(const std::vector<long double> &value);
 
 private:
     Network() : maxNumberOfEpoch( 50 ), accuracy( 1e-4 ), alpha( 1.0 )
@@ -84,23 +87,23 @@ private:
     Network & operator = (const Network & rNetwork) = delete;
 
 private:
-    quint32 maxNumberOfEpoch;
-    qreal accuracy;
-    qreal alpha;
-    quint32 numberOfNeurons;
+    std::size_t maxNumberOfEpoch;
+    long double accuracy;
+    long double alpha;
+    std::size_t numberOfNeurons;
 
     volatile bool stopFlag;
 
-    QVector< long double > trainingError;
+    std::vector< long double > trainingError;
 
-    QVector< long double > trainigResult;
-    QVector< QVector< long double > > trainingData;
+    std::vector< long double > trainigResult;
+    std::vector< std::vector< long double > > trainingData;
 
-    QVector< long double > testingResult;
-    QVector< QVector< long double > > testingData;
+    std::vector< long double > testingResult;
+    std::vector< std::vector< long double > > testingData;
 
-    QVector< long double > obtainedTestingResult;
-    QVector < long double > testingError;
+    std::vector< long double > obtainedTestingResult;
+    std::vector< long double > testingError;
 };
 
 
