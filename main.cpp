@@ -31,13 +31,9 @@ int main() {
     const auto X1 = linspace( 0.0, 1.0, 10 );
     const auto X2 = linspace( 0.0, 1.0, 10 );
 
-    const auto X3 = linspace( 0.2, 0.8, 10 );
-    const auto X4 = linspace( 0.2, 0.8, 10 );
-
     auto xx_yy = meshgrid( X1, X2 );
     const auto xx = std::move( std::get<0>( xx_yy ) );
     const auto yy = std::move( std::get<1>( xx_yy ) );
-
     const auto xxx = xx + yy;
     const auto yyy = xx - yy;
     const auto sin_xx_col = feval( []( const long double & v ) { return std::sin(v); }, colon( xxx ) );
@@ -51,10 +47,36 @@ int main() {
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
     train_out = ( train_out - mu_out ) / sigma_out;
+
+
+
+
+
+    const auto X3 = linspace( 0.2, 0.8, 10 );
+    const auto X4 = linspace( 0.2, 0.8, 10 );
+
+    auto xx_yy1 = meshgrid( X3, X4 );
+    const auto xx1 = std::move( std::get<0>( xx_yy1 ) );
+    const auto yy1 = std::move( std::get<1>( xx_yy1 ) );
+    const auto xxx1 = xx1 + yy1;
+    const auto yyy1 = xx1 - yy1;
+    const auto sin_xx_col1 = feval( []( const long double & v ) { return std::sin(v); }, colon( xxx1 ) );
+    const auto sin_yy_col1 = feval( []( const long double & v ) { return std::cos(v); }, colon( yyy1 ) );
+    const auto Y_train1 = dot_operator( sin_xx_col1, sin_yy_col1, std::plus< long double >() );
+    auto train_inp1 = merge( colon(xx1), colon(yy1) );
+    auto train_out1 = Y_train1;
+    const auto mu_inp1 = mean( train_inp1 );
+    const auto sigma_inp1 = stand( train_inp1 );
+    train_inp1 = ( train_inp1 - mu_inp1[ 0 ] ) / sigma_inp1[ 0 ];
+    const auto mu_out1 = mean( train_out1 );
+    const auto sigma_out1 = stand( train_out1 );
+    train_out1 = ( train_out1 - mu_out1 ) / sigma_out1;
+
+
+
+
     const auto patterns = size( train_inp ).first;
     std::cout << "patterns: " << patterns << std::endl;
-//    const auto bias = ones( patterns );
-//    train_inp = merge( train_inp, bias );
     train_inp = merge( train_inp, ones( patterns ) );
     const auto inputs = size( train_inp ).second;
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
@@ -86,18 +108,13 @@ int main() {
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
     }
 
-    auto xx_yy1 = meshgrid( X3, X4 );
-    const auto xx1 = std::move( std::get<0>( xx_yy1 ) );
-    const auto yy1 = std::move( std::get<1>( xx_yy1 ) );
-    auto train_test = merge( colon(xx1), colon(yy1));
-    const auto mu_test = mean( train_test );
-    const auto sigma_test = stand( train_test );
-    train_test = ( train_test - mu_test[ 0 ] ) / sigma_test[ 0 ];
-    train_test = merge( train_test, ones( train_test.size() ) );
-    const auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
 
-    const auto a = ( train_out * sigma_out ) + mu_out;
-    const auto b = ( pred * sigma_out ) + mu_out;
+    const auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_inp1 * weight_input_hidden ) );
+    std::cerr << "pred: " << pred << std::endl;
+    std::cerr << "train_out: " << train_out1 << std::endl;
+
+    const auto a = ( train_out1 * sigma_out1 ) + mu_out1;
+    const auto b = ( pred * sigma_out1 ) + mu_out1;
     const auto act_pred_err = feval( []( const long double & v ){ return std::abs( v ); }, b - a );
 
     const auto c = std::accumulate( act_pred_err.cbegin(), act_pred_err.cend(), 0.0, std::plus< long double >() ) / act_pred_err.size();
