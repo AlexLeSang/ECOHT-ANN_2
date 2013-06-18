@@ -56,13 +56,13 @@ operator << ( std::ostream & os, const std::pair< T, U> & p )
 }
 
 
-double rand_range( const double min, const double max ) {
+long double rand_range( const long double min, const long double max ) {
     static bool seeded = false;
     if ( !seeded ) {
         srand( time(NULL) );
         seeded = true;
     }
-    const double r = (double)rand() / (double)RAND_MAX;
+    const long double r = (long double)rand() / (long double)RAND_MAX;
     return min + r * (max - min);
 }
 
@@ -130,7 +130,7 @@ merge( const std::vector< std::vector <T> > & vector_t, const std::vector<T> & v
 template < typename T >
 inline
 std::tuple< std::vector< T >/*Training*/, std::vector<T>/*Testing*/ >
-split( const std::vector< T > & dataset, const std::tuple< const double, const double > & distribution ) {
+split( const std::vector< T > & dataset, const std::tuple< const long double, const long double > & distribution ) {
     assert( std::get<0>( distribution ) >= 0.0 );
     assert( std::get<0>( distribution ) <= 1.0 );
 
@@ -145,8 +145,8 @@ split( const std::vector< T > & dataset, const std::tuple< const double, const d
     std::vector<T> & testing_result = std::get<1>( result );
 
 
-    const double & training_rate = std::get<0>( distribution );
-    const double & testing_rate = std::get<1>( distribution );
+    const long double & training_rate = std::get<0>( distribution );
+    const long double & testing_rate = std::get<1>( distribution );
 
     //        std::cerr << "training_rate: " << training_rate << std::endl;
     //        std::cerr << "testing_rate: " << testing_rate << std::endl;
@@ -229,7 +229,7 @@ inline
 std::vector< T >
 linspace( const T from, const T to, const std::size_t n_points )
 {
-    static auto generate_range = []( const double start, const double step, int & i ) {
+    static auto generate_range = []( const long double start, const long double step, int & i ) {
         return start + step * i++;
     };
 
@@ -244,7 +244,7 @@ inline
 std::vector< T >
 range( const T from, const T step, const T to )
 {
-    static auto generate_range = []( const double start, const double step, int & i ) {
+    static auto generate_range = []( const long double start, const long double step, int & i ) {
         return start + step * i++;
     };
 
@@ -572,7 +572,7 @@ operator * ( const std::vector< std::vector < T > > & vv, const std::vector< T >
     std::vector< std::vector < T > > res( vv_size_pair.first );
     for ( std::size_t i = 0; i < res.size(); ++ i ) {
         std::vector< T > v1 = v;
-        std::for_each( v1.begin(), v1.end(), [&]( double & val ) {
+        std::for_each( v1.begin(), v1.end(), [&]( long double & val ) {
             val = val * vv[ i ][ 0 ];
         } );
         res[ i ] = std::move( v1 );
@@ -607,7 +607,7 @@ std::vector< T >
 operator ^ ( const std::vector< T > & v, const I power )
 {
     std::vector< T > res( v.size() );
-    std::transform( v.cbegin(), v.cend(), res.begin(), [&]( const double & v ) { return std::pow( v, power ); } );
+    std::transform( v.cbegin(), v.cend(), res.begin(), [&]( const long double & v ) { return std::pow( v, power ); } );
     return std::move( res );
 }
 
@@ -625,7 +625,7 @@ vec_to_vecvec( const std::vector< T > & v )
 }
 
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< T >
 ones ( const std::size_t n )
@@ -635,7 +635,7 @@ ones ( const std::size_t n )
     return std::move( ones_vector );
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< std::vector < T >  >
 ones ( const std::size_t n, const std::size_t n1 )
@@ -648,7 +648,7 @@ ones ( const std::size_t n, const std::size_t n1 )
     return std::move( ones_vector );
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< T >
 zeros ( const std::size_t n )
@@ -657,7 +657,7 @@ zeros ( const std::size_t n )
     return std::move( ones_vector );
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< std::vector < T >  >
 zeros ( const std::size_t n, const std::size_t n1 )
@@ -703,7 +703,7 @@ operator * ( const std::vector< T > & v1, const std::vector< std::vector< T > > 
 }
 
 // TODO rand
-double randd()
+long double randd()
 {
 #ifndef FAKE_RAND
     return rand_range( 0.0, 1.0 );
@@ -714,7 +714,7 @@ double randd()
 #endif
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< T >
 randn( const std::size_t n )
@@ -734,7 +734,7 @@ randn( const std::size_t n )
 #endif
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< std::vector< T > >
 randn( const std::size_t n , const std::size_t m)
@@ -761,7 +761,7 @@ randn( const std::size_t n , const std::size_t m)
 #endif
 }
 
-template< typename T = double >
+template< typename T = long double >
 inline
 std::vector< T >
 round( const std::vector< T >& v)
