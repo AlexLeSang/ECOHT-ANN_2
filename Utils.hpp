@@ -10,7 +10,6 @@
 #include <cmath>
 #include <utility>
 #include <random>
-#include <limits>
 
 //template< typename T > inline std::ostream & operator << ( std::ostream & os, const std::vector<T> & vector );
 
@@ -721,28 +720,12 @@ std::vector< T >
 randn( const std::size_t n )
 {
 #ifndef FAKE_RAND
-
-//#define TWOPI (6.2831853071795864769252867665590057683943387987502) /* 2 * pi */
-
-///*
-//   RAND is a macro which returns a pseudo-random numbers from a uniform
-//   distribution on the interval [0 1]
-//*/
-//#define RAND (rand())/((double) RAND_MAX)
-
-///*
-//   RANDN is a macro which returns a pseudo-random numbers from a normal
-//   distribution with mean zero and standard deviation one. This macro uses Box
-//   Muller's algorithm
-//*/
-//#define RANDN (sqrt(-2.0*log(RAND))*cos(TWOPI*RAND))
-
     std::vector< T > randn_vector( n );
-//    std::default_random_engine generator;
-    std::linear_congruential_engine< std::size_t, 1103515245, 12345, std::numeric_limits<uint32_t>::max() >  generator( time(NULL) );
+    //std::default_random_engine generator;
+    static std::linear_congruential_engine< std::size_t, 3571 , 3559 , RAND_MAX  >  generator(time(NULL));
     std::normal_distribution< T > distribution;
     std::generate( randn_vector.begin(), randn_vector.end(), [&](){
-        return distribution(generator) / std::numeric_limits <double >::max();
+        return distribution(generator);
     } );
     return std::move( randn_vector );
 #else

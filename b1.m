@@ -104,7 +104,7 @@ for iter = 1:epochs
     for j = 1:patterns
         
         %select a random pattern
-        patnum = round((rand * patterns) + 0.5);
+        patnum = round((fake_rand(j) * patterns) + 0.5);
         if patnum > patterns
             patnum = patterns;
         elseif patnum < 1
@@ -143,9 +143,9 @@ for iter = 1:epochs
 
     error = pred' - train_out;
     err(iter) =  (sum(error.^2))^0.5;
-        
        
-    
+       figure(1)
+    plot(err)
     %reset weights if requested
 %      if reset
 %          weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
@@ -167,7 +167,9 @@ for iter = 1:epochs
 %      end
        
 end
-
+    weight_input_hidden
+    weight_hidden_output
+err
 %% Testing
 X3 = linspace(0.2,0.8,10)';
 X4 = linspace(0.2,0.8,10)';
