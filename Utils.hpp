@@ -369,6 +369,16 @@ operator + ( const std::vector< T > & v, const T num )
 
 template< typename T >
 inline
+std::vector< T >
+operator + ( const T num, const std::vector< T > & v )
+{
+    std::vector< T > res = v;
+    std::for_each( res.begin(), res.end(), [&]( T & t ) { t = num + t; } );
+    return std::move( res );
+}
+
+template< typename T >
+inline
 std::vector< std::vector < T > >
 operator + ( const std::vector< std::vector < T > > & vv, const T num )
 {
@@ -389,6 +399,17 @@ operator - ( const std::vector< T > & v, const T num )
 
 template< typename T >
 inline
+std::vector< T >
+operator - ( const T num, const std::vector< T > & v )
+{
+    std::vector< T > res = v;
+    std::for_each( res.begin(), res.end(), [&]( T & t ) { t = num - t; } );
+    return std::move( res );
+}
+
+
+template< typename T >
+inline
 std::vector< std::vector < T > >
 operator - ( const std::vector< std::vector < T > > & vv, const T num )
 {
@@ -396,6 +417,7 @@ operator - ( const std::vector< std::vector < T > > & vv, const T num )
     std::for_each( res.begin(), res.end(), [&]( std::vector < T > & t ) { t = t - num; } );
     return std::move( res );
 }
+
 
 template< typename T >
 inline
@@ -426,6 +448,16 @@ operator * ( const std::vector< T > & v, const T num )
 {
     std::vector< T > res = v;
     std::for_each( res.begin(), res.end(), [&]( T & t ) { t *= num; } );
+    return std::move( res );
+}
+
+template< typename T >
+inline
+std::vector< T >
+operator * ( const T num, const std::vector< T > & v )
+{
+    std::vector< T > res = v;
+    std::for_each( res.begin(), res.end(), [&]( T & t ) { t = num * t; } );
     return std::move( res );
 }
 
