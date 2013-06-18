@@ -7,6 +7,7 @@
 #include <set>
 #include <tuple>
 #include <cassert>
+#include <chrono>
 
 #include "Utils.hpp"
 #include "Network.hpp"
@@ -19,24 +20,25 @@ auto generate_range = []( const long double start, const long double step, int &
 
 int main() {
 
-    const std::size_t hidden_neurons = 130;
-    const std::size_t epochs = 1000;
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    const std::size_t hidden_neurons = 50;
+    const std::size_t epochs = 800;
     const auto earlystop = false;
     const auto reset = false;
-    const auto hlr = 0.5;
+    const auto hlr = 0.4;
 
-    const auto X1 = linspace( 0.0, 0.5, 30 );
-    const auto X2 = linspace( 0.0, 0.5, 30 );
+    const auto X1 = linspace( 0.0, 1.0, 15 );
+    const auto X2 = linspace( 0.0, 1.0, 15 );
 
-    const auto X3 = linspace( 0.0, 0.5, 30 );
-    const auto X4 = linspace( 0.0, 0.5, 30 );
+    const auto X3 = linspace( 0.0, 1.0, 15 );
+    const auto X4 = linspace( 0.0, 1.0, 15 );
 
     auto xx_yy = meshgrid( X1, X2 );
     const auto xx = std::move( std::get<0>( xx_yy ) );
     const auto yy = std::move( std::get<1>( xx_yy ) );
 
-    const auto xxx = xx + yy;
-    const auto yyy = xx - yy;
+    const auto xxx = (xx + yy) * M_PI;
+    const auto yyy = (xx - yy) * M_PI;
     const auto sin_xx_col = feval( []( const long double & v ) { return std::sin(v); }, colon( xxx ) );
     const auto sin_yy_col = feval( []( const long double & v ) { return std::cos(v); }, colon( yyy ) );
     const auto Y_train = dot_operator( sin_xx_col, sin_yy_col, std::plus< long double >() );
@@ -45,8 +47,8 @@ int main() {
     const auto xx1 = std::move( std::get<0>( xx_yy1 ) );
     const auto yy1 = std::move( std::get<1>( xx_yy1 ) );
 
-    const auto xxx1 = xx1 + yy1;
-    const auto yyy1 = xx1 - yy1;
+    const auto xxx1 = (xx1 + yy1) * M_PI;
+    const auto yyy1 = (xx1 - yy1) * M_PI;
     const auto sin_xx_col1 = feval( []( const long double & v ) { return std::sin(v); }, colon( xxx1 ) );
     const auto sin_yy_col1 = feval( []( const long double & v ) { return std::cos(v); }, colon( yyy1 ) );
     const auto Y_train1 = dot_operator( sin_xx_col1, sin_yy_col1, std::plus< long double >() );
@@ -111,6 +113,13 @@ int main() {
     const auto cc = std::max_element( act_pred_err.cbegin(), act_pred_err.cend() );
     std::cerr << "Average arror: " << c << std::endl;
     std::cerr << "Max error: " << *cc << std::endl;
+
+    const auto t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "It took\n"
+              << std::chrono::duration_cast<std::chrono::hours>(t2 - t1).count() << " h\n"
+              << std::chrono::duration_cast<std::chrono::minutes>(t2 - t1).count() << " m\n"
+              << std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count() << " sec\n"
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
     return 0;
 }
 
