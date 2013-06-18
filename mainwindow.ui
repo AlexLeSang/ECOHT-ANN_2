@@ -24,7 +24,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="controlsTab">
        <attribute name="title">
@@ -514,6 +514,7 @@
     <property name="title">
      <string>About</string>
     </property>
+    <addaction name="actionAuthors"/>
    </widget>
    <addaction name="menuHelp"/>
   </widget>
@@ -536,6 +537,11 @@
   <action name="actionOutput_File">
    <property name="text">
     <string>Output File</string>
+   </property>
+  </action>
+  <action name="actionAuthors">
+   <property name="text">
+    <string>Authors</string>
    </property>
   </action>
  </widget>

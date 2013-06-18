@@ -1,5 +1,6 @@
 #include "Preprocessor.hpp"
 #include "Facade.hpp"
+#include <fstream>
 /*!
  * \brief Preprocessor::Preprocessor
  */
@@ -86,29 +87,19 @@ void Preprocessor::readFile()
  * \brief Preprocessor::writeFile
  * \param data
  */
-void Preprocessor::writeFile( const Dataset & data )
+void Preprocessor::writeFile( const std::vector<std::vector<long double> >& data )
 {
-    QFile outputFile( fileNameOut );
-    if ( !outputFile.open( QIODevice::ReadWrite | QIODevice::Text ) ) {
-        throw FileOpeningErrorException( "Preprocessor::writeFile" );
-    }
+    std::ofstream outputFile( fileNameOut.toStdString());
 
-    QTextStream outputStream( &outputFile );
-    quint32 numberOfInputs = data.first().first.size();
-    outputStream << numberOfInputs << '\n';
-
-    for ( auto it = data.constBegin(); it != data.constEnd(); ++it ) {
-
-        for ( auto itInputs = (*it).first.constBegin(); itInputs != (*it).first.constBegin() + numberOfInputs; ++itInputs ) {
-            outputStream << (*itInputs) << ' ';
+    for( auto i =0 ; i < data[0].size(); ++i){
+        for(auto j = 0; j < data.size(); ++j){
+            outputFile << data[j][i];
+            if ( j+1 == data.size())
+                outputFile << std::endl;
         }
 
-        for ( auto itOutputs = (*it).second.constBegin(); itOutputs !=(*it).second.constEnd(); ++itOutputs ) {
-            outputStream << (*itOutputs) << ' ';
-        }
-
-        outputStream << '\n';
     }
+
 }
 
 /*!
@@ -167,7 +158,7 @@ void Preprocessor::setPercentageOfTest(const quint32 value)
  * \brief Preprocessor::saveFile
  * \param data
  */
-void Preprocessor::saveFile(const Dataset &data)
+void Preprocessor::saveFile(const std::vector<std::vector< long double> > &data)
 {
     writeFile(data);
 }

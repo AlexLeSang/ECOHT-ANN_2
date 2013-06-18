@@ -39,14 +39,14 @@ public:
     void setOutputFileName(const QString & fileName);
     void setPercentageOfTest( const quint32 value );
 
-    void saveFile( const Dataset & data);
+    void saveFile(const std::vector<std::vector<long double> > &data);
     void flush();
 
 private:
     Preprocessor();
 
     void readFile();
-    void writeFile( const Dataset & data);
+    void writeFile(const std::vector<std::vector<long double> > &data);
 
 private:
     QString fileNameIn;
