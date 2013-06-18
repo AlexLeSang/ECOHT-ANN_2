@@ -226,7 +226,7 @@ int main() {
     train_out = ( train_out - mu_out ) / sigma_out;
 
     const auto patterns = size( train_inp ).first;
-   std::cerr << "patterns: " << patterns << std::endl;
+    std::cerr << "patterns: " << patterns << std::endl;
 
     /* Ones test
     const auto b = ones( 5 );
@@ -346,7 +346,6 @@ int main() {
         const auto p1 = feval([]( const long double& v){return tanh(v);}, train_inp * weight_input_hidden);
 
         //std::cerr << "train_inp: " << train_inp << std::endl;
-        //std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
         //std::cerr << "p1: " << p1 << std::endl;
         const auto pred = weight_hidden_output * trans( p1 );
         //std::cerr << "size(pred): " << size(pred) << std::endl;
@@ -355,6 +354,8 @@ int main() {
         const auto error_sq = error ^ 2;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
     }
+    std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
     std::cerr << "err: " << err << std::endl;
     return 0;
 }
