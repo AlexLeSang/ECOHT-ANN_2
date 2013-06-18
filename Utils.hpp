@@ -559,6 +559,7 @@ operator * ( const std::vector< std::vector < T > > & vv, const T num )
     return std::move( res );
 }
 
+
 template< typename T >
 inline
 std::vector< std::vector < T > >

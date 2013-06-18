@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-    /* Operator test
+//    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -212,8 +212,14 @@ int main() {
     const auto y_d_d_10 = feval( []( double & v ) { v *= 10.0; }, y_d_d );
     std::cerr << "y_d_d_10: " << y_d_d_10 << std::endl;
 
+    std::cerr << "y_div: " << y_div << std::endl;
+    const std::vector< double > va = { 1, 2, 3, 4, 5 };
+    std::cerr << "va: " << va << std::endl;
+    const auto va_m_y_div = va * y_div;
+    std::cerr << "va_m_y_div: " << va_m_y_div << std::endl;
+
     exit( -1 );
-    */
+//    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
