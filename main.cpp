@@ -10,12 +10,13 @@
 #include <chrono>
 
 #include "Utils.hpp"
-#include "Network.hpp"
+#include "ANNetwork.hpp"
 
 
 #include <QApplication>
-#include "mainwindow.hpp"
+//#include "mainwindow.hpp"
 
+/*
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -23,15 +24,16 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+*/
 
-/*
+///*
 int main() {
 
     const auto t1 = std::chrono::high_resolution_clock::now();
 
     const std::size_t hidden_neurons = 45;
-    const std::size_t epochs = 3000;
-    const long double hlr = 0.35;
+    const std::size_t max_epoch = 3000;
+    const long double learning_rate = 0.35;
     volatile auto reset = false;
     const long double desired_accuracy = 1e-3;
 
@@ -75,7 +77,8 @@ int main() {
 
     // Network testing and evaluation
     {
-        const auto training_result = training(hidden_neurons, hlr, epochs, train_out, train_inp, desired_accuracy, &reset);
+//        const auto training_result = training(hidden_neurons, hlr, epochs, train_out, train_inp, desired_accuracy, &reset);
+        const auto training_result = training(train_inp, train_out, hidden_neurons, learning_rate, max_epoch, desired_accuracy, &reset);
 
         const auto weight_hidden_output = std::get<0>(training_result);
         const auto weight_input_hidden = std::get<1>(training_result);
@@ -95,4 +98,4 @@ int main() {
               << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
     return 0;
 }
-*/
+//*/

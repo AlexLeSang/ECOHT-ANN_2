@@ -4,10 +4,13 @@
 
 #include "Facade.hpp"
 
+#include "ANNetwork.hpp"
+
 void Network::run() {
-    initLayers();
-    training( trainingData, trainigResult );
-    testing( testingData, testingResult );
+    stopFlag = false;
+    auto net
+
+
     Facade::getInstance().processFinished();
 }
 

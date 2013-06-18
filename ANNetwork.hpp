@@ -13,22 +13,22 @@
 #include "Utils.hpp"
 
 std::tuple< std::vector<long double>, std::vector<std::vector<long double> >, std::vector<long double> >
-training(const std::size_t hidden_neurons,
-         const long double hlr,
-         const std::size_t epochs,
-         const std::vector< long double > train_ou,
-         const std::vector< std::vector< long double > >& train_in,
+training(const std::vector< std::vector< long double > >& train_in,
+         const std::vector< long double > & train_out,
+         const std::size_t hidden_neurons,
+         const long double learning_rate,
+         const std::size_t max_epoch,
          const long double desired_accuracy,
          volatile bool * reset)
 {
     auto train_inp = train_in;
-    auto train_out = train_ou;
+    auto local_train_out = train_out;
     const auto mu_inp = mean( train_inp );
     const auto sigma_inp = stand( train_inp );
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
-    const auto mu_out = mean( train_out );
-    const auto sigma_out = stand( train_out );
-    train_out = ( train_out - mu_out ) / sigma_out;
+    const auto mu_out = mean( local_train_out );
+    const auto sigma_out = stand( local_train_out );
+    local_train_out = ( local_train_out - mu_out ) / sigma_out;
     const auto patterns = size( train_inp ).first;
 
     std::cout << "patterns: " << patterns << std::endl;
@@ -36,18 +36,18 @@ training(const std::size_t hidden_neurons,
     train_inp = merge( train_inp, bias );
     const auto inputs = size( train_inp ).second;
 
-    std::vector< long double > err( epochs );
+    std::vector< long double > err( max_epoch );
 
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5l ) / 10.0l;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5l ) / 10.0l;
 
-    for( std::size_t i = 0; i < epochs; ++i ) {
-        const auto alr = hlr;
+    for( std::size_t i = 0; i < max_epoch; ++i ) {
+        const auto alr = learning_rate;
         const auto blr = alr / 10.0;
         for( std::size_t j = 0; j < patterns/2; ++j ){
             const auto patnum = ( static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) - 1 ) % patterns;
             const auto this_pat = train_inp[ patnum ];
-            const auto act = train_out[ patnum ];
+            const auto act = local_train_out[ patnum ];
             const auto hval = feval( []( const long double & v ){ return std::tanh( v ); }, this_pat * weight_input_hidden );
             const auto pred = hval * weight_hidden_output;
             const auto error = pred - act;
@@ -62,7 +62,7 @@ training(const std::size_t hidden_neurons,
         }
         const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden );
         const auto pred = weight_hidden_output * trans( p1 );
-        const auto error = pred - train_out;
+        const auto error = pred - local_train_out;
         const auto error_sq = error ^ 2;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
 
