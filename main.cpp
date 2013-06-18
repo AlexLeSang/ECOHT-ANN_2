@@ -233,7 +233,7 @@ int main() {
         const auto blr = alr / 10.0;
 
         for( auto j = 0; j < patterns; ++j ){
-            const auto patnum = static_cast<std::size_t>( round( rand_range(0.0,1.0) * patterns + 0.5 ) ) % patterns;
+            const auto patnum = static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) % patterns;
             const auto train_pat = train_inp[ patnum ];
             const auto act = train_out[ patnum ];
         }

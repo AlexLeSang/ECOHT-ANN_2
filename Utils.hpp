@@ -484,11 +484,24 @@ zeros ( const std::size_t n, const std::size_t n1 )
 
 
 // TODO rand
+double randd()
+{
+    return rand_range( 0.0, 1.0);
+}
 
 // TODO dot product
+//Use dot_operator for that
 
 // TODO inner product
-
+template< typename T >
+inline
+T
+operator * ( const std::vector< T >& v1, const std::vector< T >& v2)
+{
+    T res;
+    std::inner_product(v1.cbegin(), v1.cend(), v2.cbegin(), 0.0, std::plus< T >(), std::multiplies< T >() );
+    return std::move( res );
+}
 
 template< typename T = double >
 inline
