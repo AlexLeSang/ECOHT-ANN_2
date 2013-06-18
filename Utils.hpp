@@ -720,7 +720,7 @@ randn( const std::size_t n )
 #ifndef FAKE_RAND
     std::vector< T > randn_vector( n );
     //std::default_random_engine generator;
-    std::linear_congruential_engine< std::size_t, 3571 , 3559 , RAND_MAX  >  generator(time(NULL));
+    static std::linear_congruential_engine< std::size_t, 3571 , 3559 , RAND_MAX  >  generator(time(NULL));
     std::normal_distribution< T > distribution;
     std::generate( randn_vector.begin(), randn_vector.end(), [&](){
         return distribution(generator);
