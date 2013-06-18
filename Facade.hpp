@@ -4,7 +4,9 @@
 #include <QObject>
 
 #include "Network.hpp"
-//#include "Preprocessor.hpp"
+#include "Preprocessor.hpp"
+
+class Network;
 
 /*!
  * \brief The Facade class
@@ -17,27 +19,24 @@ public:
     static Facade & getInstance();
     void processFinished();
 
-    QVector< qreal > getErrors() const;
+    QVector<long double> getErrors() const;
 
 public slots:
-    void setBeta( double val );
     void setAlhpa( double val );
     void setAccuracy( double val );
     void setMaxNumberOfEpoh( int val );
-    void setInitialLayerInfo( const LayerDescription & val );
+    void setNumberOfNeurons( const quint32 & val );
     void setTrainingDataPercent(int val);
 
     void setInputFileName( const QString fileName );
     void setOutputFileName( const QString fileName );
-
-    void setLayersDescription(const QVector<QPair<quint32, quint32> > layersDescription );
 
     void startProcess();
     void stopProcess();
 
 signals:
     void processEnd();
-    void sendInitialLayerInfo( const LayerDescription & val );
+    void sendNumberOfNeurons( const quint32 & val );
 
 private:
     Facade();

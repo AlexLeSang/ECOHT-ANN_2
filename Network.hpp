@@ -69,6 +69,12 @@ public:
     QVector<long double> getTestingError() const;
     void setTestingError(const QVector<long double> &value);
 
+    QVector<long double> getTrainingError() const;
+    void setTrainingError(const QVector<long double> &value);
+
+    quint32 getNumberOfNeurons() const;
+    void setNumberOfNeurons(const quint32 &value);
+
 private:
     Network() : maxNumberOfEpoch( 50 ), accuracy( 1e-4 ), alpha( 1.0 )
     {
@@ -81,8 +87,11 @@ private:
     quint32 maxNumberOfEpoch;
     qreal accuracy;
     qreal alpha;
+    quint32 numberOfNeurons;
 
     volatile bool stopFlag;
+
+    QVector< long double > trainingError;
 
     QVector< long double > trainigResult;
     QVector< QVector< long double > > trainingData;
@@ -94,23 +103,5 @@ private:
     QVector < long double > testingError;
 };
 
-
-#ifdef TEST_MODE
-
-#include <QtTest/QtTest>
-#include <QObject>
-
-class NetworkTest : public QObject {
-    Q_OBJECT
-public:
-    void test() {
-        ProcessTest();
-    }
-
-private slots:
-    void ProcessTest();
-};
-
-#endif
 
 #endif // NETWORK_HPP

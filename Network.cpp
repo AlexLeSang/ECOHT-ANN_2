@@ -8,8 +8,9 @@
 
 void Network::run() {
     stopFlag = false;
-    auto net
 
+
+    // TODO network
 
     Facade::getInstance().processFinished();
 }
@@ -72,4 +73,24 @@ QVector<long double> Network::getTestingError() const
 void Network::setTestingError(const QVector<long double> &value)
 {
     testingError = value;
+}
+
+QVector<long double> Network::getTrainingError() const
+{
+    return trainingError;
+}
+
+void Network::setTrainingError(const QVector<long double> &value)
+{
+    trainingError = value;
+}
+
+quint32 Network::getNumberOfNeurons() const
+{
+    return numberOfNeurons;
+}
+
+void Network::setNumberOfNeurons(const quint32 &value)
+{
+    numberOfNeurons = value;
 }

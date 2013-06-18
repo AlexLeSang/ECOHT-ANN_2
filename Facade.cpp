@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Facade.hpp"
+#include "Preprocessor.hpp"
 
 /*!
  * \brief Facade::Facade
@@ -31,19 +32,11 @@ void Facade::processFinished()
  * \brief Facade::getErrors
  * \return
  */
-QVector< qreal >  Facade::getErrors() const
+QVector< long double >  Facade::getErrors() const
 {
-    return networkRef.getNetworkError();
+    return networkRef.getTrainingError();
 }
 
-/*!
- * \brief Facade::setBeta
- * \param val
- */
-void Facade::setBeta(double val)
-{
-    networkRef.setBeta( val );
-}
 
 /*!
  * \brief Facade::setAlhpa
@@ -72,10 +65,6 @@ void Facade::setMaxNumberOfEpoh(int val)
     networkRef.setMaxNumberOfEpoch( val );
 }
 
-/*!
- * \brief Facade::setTrainingDataPercent
- * \param val
- */
 void Facade::setTrainingDataPercent(int val)
 {
     preprocessorRef.setPercentageOfTest( static_cast<quint32>(val) );
@@ -94,80 +83,38 @@ void Facade::setInputFileName(const QString fileName)
     }
 }
 
-/*!
- * \brief Facade::setOutputFileName
- * \param fileName
- */
 void Facade::setOutputFileName(const QString fileName)
 {
     try{
         preprocessorRef.setOutputFileName( fileName );
-    }catch(std::exception e){
+    } catch( std::exception e ){
         std::cerr << e.what() << std::endl;
         return;
     }
-
-    auto result = networkRef.getObtainedTestingResult();
-    auto data = preprocessorRef.getTestingData();
-    //auto trdata = preprocessorRef.getTrainingData();
-    //auto trres = preprocessorRef.getTrainingResult();
-    Dataset d;
-    d.resize(data.size());
-    for(auto it = d.begin(); it != d.end();++it){
-        auto i = it - d.begin();
-        // if(i < trdata.size()){
-        //     (*it).first = trdata[i];
-        //     (*it).second = trres[i];
-        // }else{
-        (*it).first = data[i/* - trdata.size()*/];
-        (*it).second = result[i /*- trdata.size()*/].getData();
-        // }
-    }
-    preprocessorRef.saveFile( d );
+    // TODO
+//    preprocessorRef.saveFile( d );
 }
 
-/*!
- * \brief Facade::setLayersDescription
- * \param layersDescription
- */
-void Facade::setLayersDescription(const QVector<QPair<quint32, quint32> > layersDescription)
+void Facade::setNumberOfNeurons(const quint32 & val)
 {
-    networkRef.setLayersDescription( layersDescription ); // WARNING Oleksandr Halushko type hack
+    networkRef.setNumberOfNeurons( val );
+    emit sendNumberOfNeurons( val );
 }
 
-/*!
- * \brief Facade::startProcess
- */
 void Facade::startProcess()
 {
-    const auto & trainingData = preprocessorRef.getTrainingData();
-    const auto & trainingResult = preprocessorRef.getTrainingResult();
+    // TODO get data, split and set to network
 
-    const auto & testingData = preprocessorRef.getTestingData();
-    const auto & testingResult = preprocessorRef.getTestingResult();
+//    networkRef.setTrainingData( trainingData );
+//    networkRef.setTrainigResult( trainingResult );
 
-    networkRef.setTrainingData( trainingData );
-    networkRef.setTrainigResult( trainingResult );
-
-    networkRef.setTestingData( testingData );
-    networkRef.setTestingResult( testingResult );
+//    networkRef.setTestingData( testingData );
+//    networkRef.setTestingResult( testingResult );
 
     QThreadPool::globalInstance()->start( &networkRef );
 }
 
-/*!
- * \brief Facade::stopProcess
- */
 void Facade::stopProcess()
 {
     networkRef.stop();
-}
-
-/*!
- * \brief Facade::setInitialLayerInfo
- * \param val
- */
-void Facade::setInitialLayerInfo( const LayerDescription &val)
-{
-    emit sendInitialLayerInfo( val );
 }

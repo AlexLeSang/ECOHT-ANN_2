@@ -25,7 +25,8 @@ FORMS += \
 SOURCES += main.cpp\
       mainwindow.cpp \
     Facade.cpp \
-    Network.cpp
+    Network.cpp \
+    Preprocessor.cpp
 
 HEADERS += \
     Utils.hpp \
@@ -33,7 +34,8 @@ HEADERS += \
     Facade.hpp \
     ANNetwork.hpp \
     Network.hpp \
-    Exceptions.hpp
+    Exceptions.hpp \
+    Preprocessor.hpp
 
 
 OTHER_FILES += \

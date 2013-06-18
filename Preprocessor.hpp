@@ -4,7 +4,6 @@
 #include <QtCore>
 
 #include "Exceptions.hpp"
-#include "Defines.hpp"
 #include <algorithm>
 #include <vector>
 
@@ -24,7 +23,9 @@ constexpr quint32 defaultPercent = 30;
 /*!
  * \brief SplittedDataSet
  */
-typedef QVector < QVector < qreal > > SplittedDataSet;
+typedef QVector < QVector < long double > > SplittedDataSet;
+
+typedef QVector < long double > SplittedResult;
 
 class Preprocessor
 {
@@ -32,10 +33,7 @@ public:
     static Preprocessor & getInstance();
 
     std::vector<std::vector<long double> > getData() const;
-    const SplittedDataSet & getTrainingData() const;
-    const SplittedDataSet & getTrainingResult() const;
-    const SplittedDataSet & getTestingData() const;
-    const SplittedDataSet & getTestingResult() const;
+
 
     void setInputFileName(const QString & fileName);
     void setOutputFileName(const QString & fileName);
@@ -47,33 +45,15 @@ public:
 private:
     Preprocessor();
 
-    void splitData();
     void readFile();
     void writeFile( const Dataset & data);
 
 private:
-    SplittedDataSet trainingData;
-    SplittedDataSet trainingResults;
-    SplittedDataSet testingData;
-    SplittedDataSet testingResult;
     QString fileNameIn;
     QString fileNameOut;
     Dataset cache;
     quint32 percentageOfTest;
     QDateTime lastModified;
 };
-
-#ifdef TEST_MODE
-
-#include <QtTest/QtTest>
-#include <QObject>
-class PreprocessorTest : public QObject {
-    Q_OBJECT
-private slots:
-    void EmptyTest();
-    void InitializationTest();
-    void ProcessTest();
-};
-#endif
 
 #endif // PREPROCESSOR_HPP
