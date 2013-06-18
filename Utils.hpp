@@ -508,6 +508,29 @@ operator + ( const std::vector< T >& v1, const std::vector< T >& v2 )
 
 template< typename T >
 inline
+std::vector< std::vector < T > >
+operator * ( const std::vector< std::vector < T > > & vv, const std::vector< std::vector < T > > & vv1 )
+{
+    const auto vv_sp = size( vv );
+    const auto vv1_sp = size( vv1 );
+
+    assert( vv_sp.second == vv1_sp.first );
+
+    std::vector< std::vector < T > > res( vv_sp.first );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        res[ i ].resize( vv1_sp.second );
+        for ( std::size_t j = 0; j < res[ i ].size(); ++ j ) {
+            for ( std::size_t k = 0; k < vv_sp.second; ++ k ) {
+                res[ i ][ j ] += vv[ i ][ k ] * vv1[ k ][ j ];
+            }
+        }
+    }
+
+    return std::move( res );
+}
+
+template< typename T >
+inline
 std::vector< T >
 operator * ( const std::vector< T > & v, const T num )
 {
@@ -550,29 +573,6 @@ operator * ( const std::vector< std::vector < T > > & vv, const std::vector< T >
         } );
         res[ i ] = std::move( v1 );
     }
-    return std::move( res );
-}
-
-template< typename T >
-inline
-std::vector< std::vector < T > >
-operator * ( const std::vector< std::vector < T > > & vv, const std::vector< std::vector < T > > & vv1 )
-{
-    const auto vv_sp = size( vv );
-    const auto vv1_sp = size( vv1 );
-
-    assert( vv_sp.second == vv1_sp.first );
-
-    std::vector< std::vector < T > > res( vv_sp.first );
-    for ( std::size_t i = 0; i < res.size(); ++ i ) {
-        res[ i ].resize( vv1_sp.second );
-        for ( std::size_t j = 0; j < res[ i ].size(); ++ j ) {
-            for ( std::size_t k = 0; k < vv_sp.second; ++ k ) {
-                res[ i ][ j ] += vv[ i ][ k ] * vv1[ k ][ j ];
-            }
-        }
-    }
-
     return std::move( res );
 }
 

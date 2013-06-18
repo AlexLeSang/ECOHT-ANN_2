@@ -12,7 +12,7 @@
 #include "Network.hpp"
 
 
-auto generate_range = []( const double start, const double step, int & i ) {
+auto generate_range = []( const long double start, const long double step, int & i ) {
     return start + step * i++;
 };
 
@@ -106,11 +106,11 @@ int main() {
     const auto xx = std::move( std::get<0>( xx_yy ) );
     const auto yy = std::move( std::get<1>( xx_yy ) );
 
-    const auto sin_xx_col = feval( []( const double & v ) { return std::sin(v); }, colon(xx) );
+    const auto sin_xx_col = feval( []( const long double & v ) { return std::sin(v); }, colon(xx) );
 
-    const auto sin_yy_col = feval( []( const double & v ) { return std::sin(v); }, colon(yy) );
+    const auto sin_yy_col = feval( []( const long double & v ) { return std::sin(v); }, colon(yy) );
 
-    const auto Y_train = dot_operator( sin_xx_col, sin_yy_col, std::multiplies< double >() );
+    const auto Y_train = dot_operator( sin_xx_col, sin_yy_col, std::multiplies< long double >() );
 
     auto train_inp = merge( colon(xx), colon(yy) );
     auto train_out = Y_train;
@@ -284,8 +284,8 @@ int main() {
     //std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
     //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
-    epochs = 1;
-    std::vector< double > err(epochs);
+    epochs = 4;
+    std::vector< long double > err(epochs);
 
     for( std::size_t i = 0; i < epochs; ++i ) {
         const auto alr = hlr;
@@ -305,7 +305,7 @@ int main() {
             // TODO check xx
             //std::cerr << "xx: " << xx;
             //std::cerr << "size(xx): " << size( xx ) << std::endl;
-            const auto tanhxx = feval( []( const double & v ){ return std::tanh(v); }, xx );
+            const auto tanhxx = feval( []( const long double & v ){ return std::tanh(v); }, xx );
             // TODO check tanhxx
             //std::cerr << "tanhxx: " << tanhxx ;
             //std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
@@ -320,28 +320,36 @@ int main() {
             const auto delta_HO = hval * error * blr;
             //std::cerr << "delta_HO: " << delta_HO << std::endl;
             weight_hidden_output = weight_hidden_output - delta_HO;
-            std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+            //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
             //delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
             const auto m1 = weight_hidden_output * alr * error;
             //std::cerr << "m1: " << m1 << std::endl;
             const auto m2 = 1.0 - (hval^2);
             //std::cerr << "m3: " << m3 << std::endl;
-            const auto m3 = dot_operator( m1, m2, std::multiplies< double >());
+            const auto m3 = dot_operator( m1, m2, std::multiplies< long double >());
             //std::cerr << "m3: " << m3 << std::endl;
             const auto m4 = vec_to_vecvec( m3 );
             const auto delta_IH =  m4 * this_pat;
             //std::cerr << "delta_IH: " << delta_IH << std::endl;
             weight_input_hidden = weight_input_hidden - trans( delta_IH );
-            std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+            //std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
 //            pred = weight_hidden_output*tanh(train_inp*weight_input_hidden)';
 //                error = pred' - train_out;
 //                err(iter) =  (sum(error.^2))^0.5;
         }
-        const auto p1 = feval([]( const double& v){return tanh(v);}, train_inp* weight_input_hidden);
-        std::cerr << "p1: " << p1 << std::endl;
-        const auto pred = weight_hidden_output * p1;
-        exit( -1 );
+        const auto p1 = feval([]( const long double& v){return tanh(v);}, train_inp * weight_input_hidden);
+
+        //std::cerr << "train_inp: " << train_inp << std::endl;
+        //std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+        //std::cerr << "p1: " << p1 << std::endl;
+        const auto pred = weight_hidden_output * trans( p1 );
+        //std::cerr << "size(pred): " << size(pred) << std::endl;
+        //std::cerr << "pred: " << pred << std::endl;
+        const auto error = pred - train_out;
+        const auto error_sq = error ^ 2;
+        err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
     }
+    std::cerr << "err: " << err << std::endl;
     return 0;
 }
 

@@ -91,7 +91,7 @@ weight_input_hidden = (wih - 0.5)/10;
 weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-epochs = 1;
+epochs = 4;
 %do a number of epochs
 for iter = 1:epochs 
     
@@ -139,40 +139,35 @@ for iter = 1:epochs
     % -- another epoch finished
     
     %plot overall network error at end of each epoch
-    train_inp
-    weight_input_hidden
-    p1 = tanh(train_inp*weight_input_hidden)'
+    p1 = tanh(train_inp*weight_input_hidden)';
     pred = weight_hidden_output*p1;
-        exit(-1)
+
     error = pred' - train_out;
-    err(iter) =  (sum(error.^2))^0.5;
-    
-    figure(1);
-    plot(err)
-    
+    err(iter) =  (sum(error.^2))^0.5
+        
     
     %reset weights if requested
-    if reset
-        weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
-        weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
-        fprintf('weights reaset after %d epochs\n',iter);
-        reset = 0;
-    end
-    
-    %stop if requested
-    if earlystop
-        fprintf('stopped at epoch: %d\n',iter); 
-        break 
-    end 
-
-    %stop if error is small
-    if err(iter) < 0.001
-        fprintf('converged at epoch: %d\n',iter);
-        break 
-    end
+%      if reset
+%          weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
+%          weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
+%          fprintf('weights reaset after %d epochs\n',iter);
+%          reset = 0;
+%      end
+%      
+%      %stop if requested
+%      if earlystop
+%          fprintf('stopped at epoch: %d\n',iter); 
+%          break 
+%      end 
+%  
+%      %stop if error is small
+%      if err(iter) < 0.001
+%          fprintf('converged at epoch: %d\n',iter);
+%          break 
+%      end
        
 end
-
+exit(-1)
 
 
 %% Testing
