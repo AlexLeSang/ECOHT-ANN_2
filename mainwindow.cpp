@@ -34,9 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         QObject::connect( ui->saveImageButton, SIGNAL( clicked() ),
                           this, SLOT( saveImage() ) );
-        QObject::connect( ui->numberOfLayers, SIGNAL( valueChanged(int) ),
-                          this, SLOT( changeLayers(int) ) );
-        QObject::connect( ui->inputOpenButton, SIGNAL( clicked() ),
+       QObject::connect( ui->inputOpenButton, SIGNAL( clicked() ),
                           this, SLOT( openInputFile() ) );
         QObject::connect( ui->saveButton, SIGNAL( clicked() ),
                           this, SLOT( openOutputFile() ) );
@@ -48,8 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
                           this, SLOT( sendAlpha() ) );
         QObject::connect( ui->alphaDegree, SIGNAL( valueChanged( int ) ),
                           this, SLOT( sendAlpha() ) );
-        QObject::connect( ui->betaMantiss, SIGNAL( valueChanged( double ) ),
-                          this, SLOT( sendBeta() ) );
+
         QObject::connect( ui->betaDegree, SIGNAL( valueChanged( int ) ),
                           this, SLOT( sendBeta() ) );
     }
@@ -62,8 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         QObject::connect( ui->stopButton, SIGNAL( clicked() ),
                           &Facade::getInstance(), SLOT( stopProcess() ) );
-        QObject::connect( ui->testDataPercent, SIGNAL( valueChanged(int) ),
-                          &Facade::getInstance(), SLOT( setTrainingDataPercent(int) ) );
+
         QObject::connect( ui->maxEpoch, SIGNAL( valueChanged(int) ),
                           &Facade::getInstance(), SLOT( setMaxNumberOfEpoh(int) ) );
     }
@@ -160,58 +156,6 @@ void MainWindow::saveImage()
  * \brief MainWindow::changeLayers
  * \param layersNumber
  */
-void MainWindow::changeLayers( int layersNumber )
-{
-    if( layersNumber > currLayerNumber ){
-        layers.resize( layersNumber );
-    }
-    for ( auto it = layers.begin(); it != layers.end(); ++it ){
-        qint32 num = it - layers.begin() + 1;
-        if( num > currLayerNumber && num <= layersNumber ){
-            (*it).label = new QLabel( QString::number( num ) );
-            (*it).neuronsNumber = new QSpinBox();
-            (*it).neuronsNumber->setMaximum(666);
-            (*it).spacer = new QSpacerItem( 20, 20 );
-            (*it).inputsNumber = new QSpinBox();
-            (*it).inputsNumber->setMaximum(666);
-
-            if ( 1 != num ){
-                (*it).inputsNumber->setReadOnly( true );
-                connect((*( it - 1 )).neuronsNumber,SIGNAL(valueChanged( int )),(*it).inputsNumber,SLOT(setValue( int )));
-                (*it).inputsNumber->setValue( (*( it - 1 )).neuronsNumber->value() );
-            }
-
-            if( num == layersNumber){
-                (*it).neuronsNumber->setValue(1);
-            }
-
-            ui->layersGrid->addWidget( (*it).label, num, 0, 1, 1 );
-            ui->layersGrid->addWidget( (*it).neuronsNumber, num, 1, 1, 1 );
-            ui->layersGrid->addWidget( (*it).inputsNumber, num, 2, 1, 1 );
-            ui->layersGrid->addItem( (*it).spacer, num, 3 );
-        }
-
-        if( num <= currLayerNumber && num > layersNumber ){
-            ui->layersGrid->removeWidget( (*it).label );
-            ui->layersGrid->removeWidget( (*it).neuronsNumber );
-            ui->layersGrid->removeItem( (*it).spacer );
-            ui->layersGrid->removeWidget( (*it).inputsNumber );
-
-            delete (*it).label;
-            delete (*it).neuronsNumber;
-            delete (*it).spacer;
-            delete (*it).inputsNumber;
-        }
-
-        ui->layersGrid->update();
-    }
-
-    if( layersNumber < currLayerNumber ){
-        layers.resize( layersNumber );
-    }
-
-    currLayerNumber = layersNumber;
-}
 
 /*!
  * \brief MainWindow::showResults
@@ -305,9 +249,9 @@ void MainWindow::openOutputFile()
  */
 void MainWindow::setInitialLayerInfo(const LayerDescription &val )
 {
-    ui->inputsNumber->setText( QString::number( val.first ) );
-    ui->outputsNumber->setText( QString::number( val.second ) );
-    ui->numberOfLayers->setValue( 1 );
+    //ui->inputsNumber->setText( QString::number( val.first ) );
+    //ui->outputsNumber->setText( QString::number( val.second ) );
+    //ui->numberOfLayers->setValue( 1 );
     layers.first().neuronsNumber->setValue( val.second );
     layers.first().inputsNumber->setValue( val.first );
 }
@@ -337,7 +281,7 @@ void MainWindow::sendAlpha()
  */
 void MainWindow::sendBeta()
 {
-    const double mantis = ui->betaMantiss->value();
-    const int deg = ui->betaDegree->value();
-    emit setBeta( mantis * pow10( deg ) );
+    //const double mantis = ui->betaMantiss->value();
+   // const int deg = ui->betaDegree->value();
+   // emit setBeta( mantis * pow10( deg ) );
 }

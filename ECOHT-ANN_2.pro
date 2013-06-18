@@ -35,7 +35,8 @@ HEADERS += \
     ANNetwork.hpp \
     Network.hpp \
     Exceptions.hpp \
-    Preprocessor.hpp
+    Preprocessor.hpp \
+
 
 
 OTHER_FILES += \

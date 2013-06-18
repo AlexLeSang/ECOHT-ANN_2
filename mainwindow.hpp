@@ -74,7 +74,6 @@ private slots:
     void openOutputFile();
     void displayResults();
     void saveImage();
-    void changeLayers( int );
     void setInitialLayerInfo( const LayerDescription & );
     void sendAlpha();
     void sendBeta();

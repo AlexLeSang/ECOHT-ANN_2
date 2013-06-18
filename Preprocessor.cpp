@@ -18,7 +18,7 @@ std::vector< std::vector<long double> > Preprocessor::getData() const
         res[i].resize(cache.size());
     }
     for( auto i = 0; i < cache.size(); ++i){
-        unsigned int a;
+        unsigned int a = 0;
         for( auto j = 0; j < cache[i].first.size(); ++j ){
             res[j][i]=  cache[i].first[j];
             a = j;
