@@ -435,7 +435,7 @@ operator / ( const std::vector< std::vector < T > > & vv, const T num )
 }
 
 
-template< typename T = double_t >
+template< typename T = double >
 inline
 std::vector< T >
 ones( const std::size_t n )
