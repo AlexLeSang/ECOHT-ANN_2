@@ -771,4 +771,149 @@ round( const std::vector< T >& v)
     return std::move( round_vector );
 }
 
+
+/* Stand dev test
+const auto x1 = range( 1.0, 1.0, 5.0 );
+const auto std_dev = stand( x1 );
+std::cerr << "std_dev: " << std_dev << std::endl;
+const auto x2 = range( 4.0, 2.0, 12.0 );
+const auto y = merge_to_vector( x1, x2 );
+std::cerr << "y: " << y << std::endl;
+const auto y_std_dev = stand( y );
+std::cerr << "y_std_dev: " << y_std_dev << std::endl;
+*/
+
+/* Operator test
+const auto x1 = range( 1.0, 1.0, 5.0 );
+std::cerr << "x1: " << x1 << std::endl;
+const auto mutated_x1_minus = x1 - 2.0;
+std::cerr << "mutated_x1_minus: " << mutated_x1_minus << std::endl;
+const auto mutated_x1_plus = mutated_x1_minus + 2.0;
+std::cerr << "mutated_x1_plus: " << mutated_x1_plus << std::endl;
+const auto mutated_x1_mul = mutated_x1_plus * 2.0;
+std::cerr << "mutated_x1_mul: " << mutated_x1_mul << std::endl;
+const auto mutated_x1_div = mutated_x1_mul / 2.0;
+std::cerr << "mutated_x1_div: " << mutated_x1_div << std::endl;
+
+const auto y = merge( x1, x1 );
+std::cerr << "y: " << y << std::endl;
+const auto y_plus = y + 2.0;
+std::cerr << "y_plus: " << y_plus << std::endl;
+const auto y_minus = y_plus - 2.0;
+std::cerr << "y_minus: " << y_minus << std::endl;
+const auto y_mul = y_minus * 2.0;
+std::cerr << "y_mul: " << y_mul << std::endl;
+const auto y_div = y_minus / 2.0;
+std::cerr << "y_div: " << y_div << std::endl;
+
+
+const std::vector< double > x = { 2, 3, 4 };
+const auto one_m_x = 1.0 - x;
+std::cerr << "one_m_x: " << one_m_x << std::endl;
+const auto one_p_x = 1.0 + x;
+std::cerr << "one_p_x:" << one_p_x << std::endl;
+const auto two_mul_x1 = 2.0 * x;
+std::cerr << "two_mul_x1: " << two_mul_x1 << std::endl;
+
+const std::vector< double > bb = { 1, 2, 3, 4 };
+std::cerr << "bb: " << bb << std::endl;
+const auto bbt = vec_to_vecvec( bb );
+std::cerr << "bbt: " << bbt << std::endl;
+
+std::cerr << "y_div: " << y_div << std::endl;
+
+const auto y_div_t = trans( y_div );
+std::cerr << "y_div_t: " << y_div_t << std::endl;
+
+const auto y_div_t_2 = y_div_t * 2.0;
+std::cerr << "y_div_t_2: " << y_div_t_2 << std::endl;
+
+const auto dd = y_div_t_2 - y_div_t;
+std::cerr << "dd: " << dd << std::endl;
+
+const auto dd_1 = y_div_t_2 + y_div_t;
+std::cerr << "dd_1: " << dd_1 << std::endl;
+
+
+std::cerr << "y_div: " << y_div << std::endl;
+std::cerr << "y_div_t: " << y_div_t << std::endl;
+
+const auto y_d_d = y_div * y_div_t;
+std::cerr << "y_d_d: " << y_d_d << std::endl;
+
+const auto y_d_d_10 = feval( []( const long double & v ) { return v * 10.0; }, y_d_d );
+std::cerr << "y_d_d_10: " << y_d_d_10 << std::endl;
+
+std::cerr << "y_div: " << y_div << std::endl;
+const std::vector< double > va = { 1, 2, 3, 4, 5 };
+std::cerr << "va: " << va << std::endl;
+const auto va_m_y_div = va * y_div;
+std::cerr << "va_m_y_div: " << va_m_y_div << std::endl;
+
+
+{
+    const std::vector< double > ma1 = { 1, 4 };
+    const std::vector< double > ma2 = { 2, 5 };
+    const std::vector< double > ma3 = { 3, 6 };
+    const auto ma12 = merge( ma1, ma2 );
+    const auto ma = merge( ma12, ma3 );
+    std::cerr << "ma: " << ma << std::endl;
+
+    const std::vector< double > mb1 = { 10, 30, 50 };
+    const std::vector< double > mb2 = { 20, 40, 60 };
+    const auto mb = merge( mb1, mb2 );
+    std::cerr << "mb: " << mb << std::endl;
+
+    const auto mamb = ma * mb;
+    std::cerr << "mamb: " << mamb << std::endl;
+
+    const auto mbma = mb * ma;
+    std::cerr << "mbma: " << mbma << std::endl;
+
+}
+
+exit( -1 );
+    */
+
+
+
+/* Ones test
+const auto b = ones( 5 );
+std::cerr << "b: " << b << std::endl;
+const auto bb = ones( 5, 5 );
+std::cerr << "bb: " << bb << std::endl;
+ */
+
+/* Zeros test
+const auto z = zeros( 5 );
+std::cerr << "z: " << z << std::endl;
+const auto zz = zeros( 5, 5 );
+std::cerr << "zz: " << zz << std::endl;
+*/
+
+
+/* Inner prod test
+const std::vector< double > a = { 1, 2, 3 };
+std::cerr << "a: " << a << std::endl;
+
+const std::vector< double > b1 = { 1, 2, 3 };
+const std::vector< double > b2 = { 4, 5, 6 };
+const std::vector< double > b3 = { 6, 7, 8 };
+const auto b12 = merge( b1, b2 );
+const auto b = merge( b12, b3 );
+std::cerr << "b: " << b << std::endl;
+const auto ab = a * b;
+std::cerr << "ab: " << ab << std::endl;
+exit( -1 );
+ */
+
+/* Power test
+std::vector< double > x = { 1, 2, 3, 4 };
+std::cerr << "x: " << x << std::endl;
+const auto xto2 = x ^ 2;
+std::cerr << "xto2: " << xto2 << std::endl;
+exit( -1 );
+*/
+
+
 #endif // UTILS_HPP
