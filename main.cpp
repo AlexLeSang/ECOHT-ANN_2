@@ -219,7 +219,7 @@ int main() {
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
 
 
-    //std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
+    std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
 //   {
 //        auto a = randn( 100 );
 //        std::cerr << a;

@@ -517,7 +517,7 @@ randn( const std::size_t n )
 #ifndef FAKE_RAND
     std::vector< T > randn_vector( n );
     //std::default_random_engine generator;
-    std::linear_congruential_engine< std::size_t, 1 , 2 , 3  >  generator(time(NULL));
+    std::linear_congruential_engine< std::size_t, 3571 , 3559 , RAND_MAX  >  generator(time(NULL));
     std::normal_distribution< T > distribution;
     std::generate( randn_vector.begin(), randn_vector.end(), [&](){
         return distribution(generator);
@@ -537,7 +537,7 @@ randn( const std::size_t n , const std::size_t m)
 #ifndef FAKE_RAND
     std::vector< std::vector< T > > randn_vector(n);
     //std::default_random_engine generator;
-    std::linear_congruential_engine< std::size_t, 1, 2, 3 > generator(time(NULL));
+    std::linear_congruential_engine< std::size_t, 3571 , 3559 , RAND_MAX > generator(time(NULL));
     std::normal_distribution< T > distribution;
     std::for_each( randn_vector.begin(), randn_vector.end(), [&]( std::vector< T >& val){
         val.resize( m );
