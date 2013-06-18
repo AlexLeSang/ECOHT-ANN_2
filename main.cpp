@@ -23,7 +23,7 @@ int main() {
     const std::size_t epochs = 1000;
     const auto earlystop = false;
     const auto reset = false;
-    const auto hlr = 0.1;
+    const auto hlr = 0.5;
 
     const auto X1 = linspace( 0.0, 0.5, 30 );
     const auto X2 = linspace( 0.0, 0.5, 30 );
@@ -103,7 +103,7 @@ int main() {
     train_test = merge( train_test , bias);
     const auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
 
-    const auto a = train_out;//(train_out * sigma_out) + mu_out;
+    const auto a = test_out;//(train_out * sigma_out) + mu_out;
     const auto b = (pred * sigma_out) + mu_out;
     const auto act_pred_err = feval( []( const long double & v ){ return std::abs( v ); }, b - a );
 
