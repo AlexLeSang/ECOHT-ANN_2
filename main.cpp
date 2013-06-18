@@ -186,7 +186,16 @@ int main() {
     /* Ones test
     const auto b = ones( 5 );
     std::cerr << "b: " << b << std::endl;
+    const auto bb = ones( 5, 5 );
+    std::cerr << "bb: " << bb << std::endl;
      */
+
+    /* Zeros test
+    const auto z = zeros( 5 );
+    std::cerr << "z: " << z << std::endl;
+    const auto zz = zeros( 5, 5 );
+    std::cerr << "zz: " << zz << std::endl;
+    */
 
     auto bias = ones( patterns );
     train_inp = merge( train_inp, bias );
@@ -202,6 +211,9 @@ int main() {
 
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
+
+
+
 
     return 0;
 }
