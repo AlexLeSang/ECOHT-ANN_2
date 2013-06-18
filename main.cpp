@@ -240,7 +240,7 @@ int main() {
 //    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
     epochs = 1;
-    //std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
+    std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
 
     for( std::size_t i = 0; i < epochs; ++i ) {
         const auto alr = hlr;
