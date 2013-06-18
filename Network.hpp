@@ -1,104 +1,116 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
-#include <vector>
-#include <list>
-#include <algorithm>
-#include <functional>
-#include <utility>
+#include <QObject>
 
-#include <iostream>
-#include <cassert>
+#include <QPair>
+#include <QList>
+#include <QVector>
 
-#include "Utils.hpp"
+#include <QRunnable>
 
-std::tuple< std::vector<long double>, std::vector<std::vector<long double> >, std::vector<long double> >
-training(const std::size_t hidden_neurons,
-         const long double hlr,
-         const std::size_t epochs,
-         const std::vector< long double > train_ou,
-         const std::vector< std::vector< long double > >& train_in,
-         const long double desired_accuracy,
-         volatile bool * reset)
+/*!
+ * \brief The Network class
+ */
+class Network : public QRunnable
 {
-    auto train_inp = train_in;
-    auto train_out = train_ou;
-    const auto mu_inp = mean( train_inp );
-    const auto sigma_inp = stand( train_inp );
-    train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
-    const auto mu_out = mean( train_out );
-    const auto sigma_out = stand( train_out );
-    train_out = ( train_out - mu_out ) / sigma_out;
-    const auto patterns = size( train_inp ).first;
-
-    std::cout << "patterns: " << patterns << std::endl;
-    auto bias = ones( patterns );
-    train_inp = merge( train_inp, bias );
-    const auto inputs = size( train_inp ).second;
-
-    std::vector< long double > err( epochs );
-
-    auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5l ) / 10.0l;
-    auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5l ) / 10.0l;
-
-    for( std::size_t i = 0; i < epochs; ++i ) {
-        const auto alr = hlr;
-        const auto blr = alr / 10.0;
-        for( std::size_t j = 0; j < patterns/2; ++j ){
-            const auto patnum = ( static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) - 1 ) % patterns;
-            const auto this_pat = train_inp[ patnum ];
-            const auto act = train_out[ patnum ];
-            const auto hval = feval( []( const long double & v ){ return std::tanh( v ); }, this_pat * weight_input_hidden );
-            const auto pred = hval * weight_hidden_output;
-            const auto error = pred - act;
-            const auto delta_HO = hval * error * blr;
-            weight_hidden_output = weight_hidden_output - delta_HO;
-            const auto m1 = weight_hidden_output * alr * error;
-            const auto m2 = 1.0l - (hval^2);
-            const auto m3 = dot_operator( m1, m2, std::multiplies< long double >());
-            const auto m4 = vec_to_vecvec( m3 );
-            const auto delta_IH =  m4 * this_pat;
-            weight_input_hidden = weight_input_hidden - trans( delta_IH );
-        }
-        const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden );
-        const auto pred = weight_hidden_output * trans( p1 );
-        const auto error = pred - train_out;
-        const auto error_sq = error ^ 2;
-        err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
-
-        if ( *reset ) break;
-        if ( err[ i ] <= desired_accuracy ) break;
-
+public:
+    static Network & getInstance() {
+        static Network instance;
+        return instance;
     }
-    return std::move(std::make_tuple(weight_hidden_output, weight_input_hidden, err));
-}
+    void run();
 
-std::vector< long double > eval(std::vector<std::vector<long double> >& train_test,
-                                const std::vector<long double>& weight_hidden_output,
-                                const std::vector<std::vector<long double>> weight_input_hidden)
-{
-    auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
-    return std::move(pred);
-}
+    void stop() {
+        stopFlag = true;
+    }
 
-std::vector< long double >
-test_error(const std::vector< long double > & test_out,
-                const std::vector< long double > & pred,
-                const std::vector< long double > & train_out)
-{
-    const auto a = test_out;//(train_out * sigma_out) + mu_out;
-    const auto mu_out = mean( train_out );
-    const auto sigma_out = stand( train_out );
-    const auto b = (pred * sigma_out) + mu_out;
-    auto act_pred_err = feval( []( const long double & v ){ return std::abs( v ); }, b - a );
+    qreal getAccuracy() const {
+        return accuracy;
+    }
 
-    const auto c = std::accumulate( act_pred_err.cbegin(), act_pred_err.cend(), 0.0, std::plus< long double >() ) / act_pred_err.size();
-    const auto cc = std::max_element( act_pred_err.cbegin(), act_pred_err.cend() );
-    std::cout << "Average arror: " << c << std::endl;
-    std::cout << "Max error: " << *cc << std::endl;
+    void setAccuracy(const qreal value) {
+        accuracy = value;
+        Q_ASSERT( accuracy < 1.0 );
+    }
 
-    return std::move( act_pred_err );
-}
+    qreal getAlpha() const {
+        return alpha;
+    }
 
+    void setAlpha(const qreal value) {
+        alpha = value;
+    }
+
+    quint32 getMaxNumberOfEpoch() const {
+        return maxNumberOfEpoch;
+    }
+
+    void setMaxNumberOfEpoch(const quint32 value) {
+        maxNumberOfEpoch = value;
+    }
+
+
+    QVector<long double> getTrainigResult() const;
+    void setTrainigResult(const QVector<long double> &value);
+
+    QVector<QVector<long double> > getTrainingData() const;
+    void setTrainingData(const QVector<QVector<long double> > &value);
+
+    QVector<long double> getTestingResult() const;
+    void setTestingResult(const QVector<long double> &value);
+
+    QVector<QVector<long double> > getTestingData() const;
+    void setTestingData(const QVector<QVector<long double> > &value);
+
+    QVector<long double> getObtainedTestingResult() const;
+    void setObtainedTestingResult(const QVector<long double> &value);
+
+    QVector<long double> getTestingError() const;
+    void setTestingError(const QVector<long double> &value);
+
+private:
+    Network() : maxNumberOfEpoch( 50 ), accuracy( 1e-4 ), alpha( 1.0 )
+    {
+        setAutoDelete( false );
+    }
+    Network(const Network & rNetwork) = delete;
+    Network & operator = (const Network & rNetwork) = delete;
+
+private:
+    quint32 maxNumberOfEpoch;
+    qreal accuracy;
+    qreal alpha;
+
+    volatile bool stopFlag;
+
+    QVector< long double > trainigResult;
+    QVector< QVector< long double > > trainingData;
+
+    QVector< long double > testingResult;
+    QVector< QVector< long double > > testingData;
+
+    QVector< long double > obtainedTestingResult;
+    QVector < long double > testingError;
+};
+
+
+#ifdef TEST_MODE
+
+#include <QtTest/QtTest>
+#include <QObject>
+
+class NetworkTest : public QObject {
+    Q_OBJECT
+public:
+    void test() {
+        ProcessTest();
+    }
+
+private slots:
+    void ProcessTest();
+};
+
+#endif
 
 #endif // NETWORK_HPP

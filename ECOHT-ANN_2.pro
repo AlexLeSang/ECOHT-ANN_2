@@ -23,12 +23,17 @@ FORMS += \
 
 
 SOURCES += main.cpp\
-      mainwindow.cpp
+      mainwindow.cpp \
+    Facade.cpp \
+    Network.cpp
 
 HEADERS += \
-    Network.hpp \
     Utils.hpp \
-    mainwindow.hpp
+    mainwindow.hpp \
+    Facade.hpp \
+    ANNetwork.hpp \
+    Network.hpp \
+    Exceptions.hpp
 
 
 OTHER_FILES += \
