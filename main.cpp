@@ -96,18 +96,18 @@ int main() {
     //    const auto res = std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), 0 );
 
     //    std::cerr << "res: " << res << std::endl;
-    const std::size_t hidden_neurons = 60;
-    std::size_t epochs = 1700; // TODO should be constant
+    const std::size_t hidden_neurons = 30;
+    std::size_t epochs = 1000; // TODO should be constant
 
-    const auto X1 = linspace( 0.0, 0.5, 10 );
-    const auto X2 = linspace( 0.0, 0.5, 10 );
+    const auto X1 = linspace( 0.0, 0.8, 30 );
+    const auto X2 = linspace( 0.0, 0.8, 30 );
 
     auto xx_yy = meshgrid( X1, X2 );
     const auto xx = std::move( std::get<0>( xx_yy ) );
     const auto yy = std::move( std::get<1>( xx_yy ) );
 
     auto xxx = xx+yy;
-    auto yyy = xx-yy;
+    auto yyy = xx-yy*2.0;
     const auto sin_xx_col = feval( []( const long double & v ) { return std::sin(v); }, colon(xxx) );
 
     const auto sin_yy_col = feval( []( const long double & v ) { return std::cos(v); }, colon(yyy) );
@@ -402,12 +402,26 @@ int main() {
     //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
     std::cerr << "err: " << err << std::endl;
 
-    const auto X3 = linspace( 0.0, 0.5, 10 );
-    const auto X4 = linspace( 0.0, 0.5, 10 );
+    const auto X3 = linspace( 0.2, 1.6, 30 );
+    const auto X4 = linspace( 0.2, 1.6, 30 );
 
     auto xx_yy1 = meshgrid( X3, X4 );
     const auto xx1 = std::move( std::get<0>( xx_yy1 ) );
     const auto yy1 = std::move( std::get<1>( xx_yy1 ) );
+
+    auto xxx1 = xx1+yy1;
+    auto yyy1 = xx1-yy1*2.0;
+    const auto sin_xx_col1 = feval( []( const long double & v ) { return std::sin(v); }, colon(xxx1) );
+
+    const auto sin_yy_col1 = feval( []( const long double & v ) { return std::cos(v); }, colon(yyy1) );
+
+    const auto Y_train1 = dot_operator( sin_xx_col1, sin_yy_col1, std::plus< long double >() );
+
+    auto test_out = Y_train;
+
+    //const auto mu_out = mean( train_out );
+    //const auto sigma_out = stand( train_out );
+    //train_out = ( train_out - mu_out ) / sigma_out;
 
     auto train_test = merge( colon(xx1), colon(yy1));
     const auto mu_test = mean( train_test );
@@ -418,7 +432,7 @@ int main() {
 
     const auto pred = weight_hidden_output * trans( feval([](const double& v){ return std::tanh(v);}, train_test * weight_input_hidden ) );
 
-    const auto a = (train_out * sigma_out) + mu_out;
+    const auto a = test_out;//(train_out * sigma_out) + mu_out;
     const auto b = (pred * sigma_out) + mu_out;
     const auto act_pred_err = feval([](const double& v){return std::abs(v);}, b-a);
 
