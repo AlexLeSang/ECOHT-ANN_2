@@ -90,7 +90,7 @@ weight_input_hidden = (wih - 0.5)/10;
 weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-
+epochs = 1;
 %do a number of epochs
 for iter = 1:epochs 
     
@@ -109,13 +109,16 @@ for iter = 1:epochs
         elseif patnum < 1
             patnum = 1;    
         end
-       
+	patnum = 85;qq
         %set the current pattern
-        this_pat = train_inp(patnum,:);
+        this_pat = train_inp(patnum,:)
         act = train_out(patnum,1);
         
         %calculate the current error for this pattern
-        hval = (tanh(this_pat*weight_input_hidden))';
+        
+        xx = this_pat*weight_input_hidden
+        hval = (tanh(xx))'
+        %exit(-1)
         pred = hval'*weight_hidden_output';
         error = pred - act;
 

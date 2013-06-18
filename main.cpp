@@ -182,7 +182,7 @@ int main() {
     train_out = ( train_out - mu_out ) / sigma_out;
 
     const auto patterns = size( train_inp ).first;
-//    std::cerr << "patterns: " << patterns << std::endl;
+   std::cerr << "patterns: " << patterns << std::endl;
 
     /* Ones test
     const auto b = ones( 5 );
@@ -232,15 +232,14 @@ int main() {
 
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     // TODO check weight_input_hidden
-//    std::cerr << "weight_input_hidden.size: " << size( weight_input_hidden ) << std::endl;
-//    std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+    //std::cerr << "weight_input_hidden.size: " << size( weight_input_hidden ) << std::endl;
+    //std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
     // TODO check weight_hidden_output
-//    std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
-//    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+    //std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
+    //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
     epochs = 1;
-    std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
 
     for( std::size_t i = 0; i < epochs; ++i ) {
         const auto alr = hlr;
@@ -249,20 +248,23 @@ int main() {
 //        std::cerr << "blr: " << blr << std::endl;
 
         for( std::size_t j = 0; j < patterns; ++j ){
-            const auto patnum = static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) % patterns;
-//            std::cerr << "patnum: " << patnum << std::endl;
+            const auto patnum = 84;//(static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
+           //std::cerr << "patnum: " << patnum << std::endl;
             const auto this_pat = train_inp[ patnum ];
-//            std::cerr << "train_pat: " << train_pat << std::endl;
+            //std::cerr << "this_pat: " << this_pat << std::endl;
             const auto act = train_out[ patnum ];
 //            std::cerr << "act: " << act << std::endl;
 
             const auto xx = this_pat * weight_input_hidden;
             // TODO check xx
+            //std::cerr << "xx: " << xx;
             std::cerr << "size(xx): " << size( xx ) << std::endl;
             const auto tanhxx = feval( []( const double & v ){ return std::tanh(v); }, xx );
             // TODO check tanhxx
+            //std::cerr << "tanhxx: " << tanhxx ;
             std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
-            const auto hval = tanxx;
+            const auto hval = tanhxx;
+            //std::cerr << "hval: " << hval;
             // TODO check hval
 
             exit( -1 );

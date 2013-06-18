@@ -12,4 +12,4 @@ HEADERS += \
     Utils.hpp \
     ActivationFunction.hpp
 
-#DEFINES += "FAKE_RAND"
+DEFINES += "FAKE_RAND"
