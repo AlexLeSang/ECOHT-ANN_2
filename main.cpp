@@ -13,19 +13,27 @@
 #include "Network.hpp"
 
 
+#include <QApplication>
+#include "mainwindow.hpp"
 
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
 
+/*
 int main() {
 
     const auto t1 = std::chrono::high_resolution_clock::now();
-
 
     const std::size_t hidden_neurons = 45;
     const std::size_t epochs = 3000;
     const long double hlr = 0.35;
     volatile auto reset = false;
     const long double desired_accuracy = 1e-3;
-
 
     const auto X1 = linspace( 0.0l, 1.0l, 7 );
     const auto X2 = linspace( 0.0l, 1.0l, 7 );
@@ -87,3 +95,4 @@ int main() {
               << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
     return 0;
 }
+*/
