@@ -84,14 +84,14 @@ wih = [ -0.0621970,    -0.1586820,    0.01842900,    -0.1575190,    -0.0466730, 
 -0.0123090,    -0.1249270,    0.09023100,    0.03059000,    -0.0835230,    0.01725700,    0.07115200,    -0.0453520,    -0.0785110,    0.06508700,    -0.1814280,    -0.0631080,    -0.0970960,    -0.0427730,    0.11732700,    -0.0510240,    -0.0905610,    -0.0815260,    -0.1106960,    -0.2096330,    -0.1488120,    0.02971400,    0.06047000,    -0.1825570,    -0.1471750,    0.10695700,    -0.0341260,    -0.0661900,    0.09181700,    -0.2493640;
 0.00679600,    -0.0514150,    0.00156000,    -0.1697540,    0.06167500,    0.00573300,    -0.1935720,    -0.0614030,    0.04410100,    -0.0718840,    -0.0917900,    -0.1548330,    -0.0634850,    -0.1600940,    0.02461100,    -0.0582440,    -0.0404150,    -0.0566740,    -0.0481160,    0.06417400,    -0.0657850,    0.08276900,    0.06021600,    -0.0049430,    -0.0367390,    -0.0440990,    -0.0373080,    -0.2352440,    0.04906000,    -0.0726160
 ];
-%weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
-%weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
+weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
+weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
 
-  weight_input_hidden = (wih - 0.5)/10;
-  weight_hidden_output = (who - 0.5)/10;
+ % weight_input_hidden = (wih - 0.5)/10;
+  %weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-epochs = 30;
+epochs = 300;
 %do a number of epochs
 for iter = 1:epochs 
     
@@ -104,7 +104,7 @@ for iter = 1:epochs
     for j = 1:patterns
         
         %select a random pattern
-        patnum = round((fake_rand(j) * patterns) + 0.5);
+        patnum = round((rand * patterns) + 0.5);
         if patnum > patterns
             patnum = patterns;
         elseif patnum < 1
@@ -141,7 +141,7 @@ for iter = 1:epochs
     train_inp;
     weight_input_hidden;
     p0 = train_inp*weight_input_hidden;
-    p1 = tanh(p0)
+    p1 = tanh(p0);
     pred = weight_hidden_output*p1';
     %train_out
     
@@ -173,8 +173,8 @@ for iter = 1:epochs
 end
    % weight_input_hidden
    % weight_hidden_output
-%err
-exit(-1)
+err
+
 %% Testing
 X3 = linspace(0.2,0.8,10)';
 X4 = linspace(0.2,0.8,10)';
