@@ -4,93 +4,99 @@
 
 #include "Facade.hpp"
 
-#include "ANNetwork.hpp"
 
 void Network::run() {
     stopFlag = false;
 
+    auto training_result = training( trainingData, trainigResult, numberOfNeurons, alpha, maxNumberOfEpoch, accuracy, &stopFlag );
 
-    // TODO network
+    const auto weight_hidden_output = std::get<0>(training_result);
+    const auto weight_input_hidden = std::get<1>(training_result);
+    trainingError = std::get<2>(training_result);
+
+
+    obtainedTestingResult = eval( merge( testingData, ones( testingData.size() ) ), weight_hidden_output, weight_input_hidden);
+    testingError = test_error(testingResult, obtainedTestingResult, trainigResult);
 
     Facade::getInstance().processFinished();
 }
 
-QVector<long double> Network::getTrainigResult() const
+std::vector<long double> Network::getTrainigResult() const
 {
     return trainigResult;
 }
 
-void Network::setTrainigResult(const QVector<long double> &value)
+void Network::setTrainigResult(const std::vector<long double> &value)
 {
     trainigResult = value;
 }
 
-QVector<QVector<long double> > Network::getTrainingData() const
+std::vector<std::vector<long double> > Network::getTrainingData() const
 {
     return trainingData;
 }
 
-void Network::setTrainingData(const QVector<QVector<long double> > &value)
+void Network::setTrainingData(const std::vector<std::vector<long double> > &value)
 {
     trainingData = value;
 }
 
-QVector<long double> Network::getTestingResult() const
+std::vector<long double> Network::getTestingResult() const
 {
     return testingResult;
 }
 
-void Network::setTestingResult(const QVector<long double> &value)
+void Network::setTestingResult(const std::vector<long double> &value)
 {
     testingResult = value;
 }
 
-QVector<QVector<long double> > Network::getTestingData() const
+std::vector<std::vector<long double> > Network::getTestingData() const
 {
     return testingData;
 }
 
-void Network::setTestingData(const QVector<QVector<long double> > &value)
+void Network::setTestingData(const std::vector<std::vector<long double> > &value)
 {
     testingData = value;
 }
 
-QVector<long double> Network::getObtainedTestingResult() const
+std::vector<long double> Network::getObtainedTestingResult() const
 {
     return obtainedTestingResult;
 }
 
-void Network::setObtainedTestingResult(const QVector<long double> &value)
+void Network::setObtainedTestingResult(const std::vector<long double> &value)
 {
     obtainedTestingResult = value;
 }
 
-QVector<long double> Network::getTestingError() const
+std::vector<long double> Network::getTestingError() const
 {
     return testingError;
 }
 
-void Network::setTestingError(const QVector<long double> &value)
+void Network::setTestingError(const std::vector<long double> &value)
 {
     testingError = value;
 }
 
-QVector<long double> Network::getTrainingError() const
-{
-    return trainingError;
-}
-
-void Network::setTrainingError(const QVector<long double> &value)
-{
-    trainingError = value;
-}
-
-quint32 Network::getNumberOfNeurons() const
+std::size_t Network::getNumberOfNeurons() const
 {
     return numberOfNeurons;
 }
 
-void Network::setNumberOfNeurons(const quint32 &value)
+void Network::setNumberOfNeurons(const std::size_t &value)
 {
     numberOfNeurons = value;
+}
+
+std::vector<long double> Network::getTrainingError() const
+{
+    return trainingError;
+}
+
+void Network::setTrainingError(const std::vector<long double> &value)
+{
+    trainingError = value;
 }

@@ -9,8 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
 {
-    currLayerNumber = 0;
-
     ui->setupUi(this);
     ui->stopButton->hide();
 
@@ -28,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
     curve.setPen( pen );
     curve.attach( ui->qwtPlot );
     sendAlpha();
-    sendBeta();
 
     // INFO connect ui to mainwindow
     {
@@ -46,9 +43,6 @@ MainWindow::MainWindow(QWidget *parent)
                           this, SLOT( sendAlpha() ) );
         QObject::connect( ui->alphaDegree, SIGNAL( valueChanged( int ) ),
                           this, SLOT( sendAlpha() ) );
-
-        QObject::connect( ui->betaDegree, SIGNAL( valueChanged( int ) ),
-                          this, SLOT( sendBeta() ) );
     }
 
     // INFO connectio ui to ui
@@ -62,6 +56,10 @@ MainWindow::MainWindow(QWidget *parent)
 
         QObject::connect( ui->maxEpoch, SIGNAL( valueChanged(int) ),
                           &Facade::getInstance(), SLOT( setMaxNumberOfEpoh(int) ) );
+
+        QObject::connect( ui->numberOfNeurons, SIGNAL( valueChanged(int) ),
+                          &Facade::getInstance(), SLOT( setNumberOfNeurons(int) ) );
+
     }
 //    */
 //    /* INFO connection facade to ui
@@ -88,12 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
                           &Facade::getInstance(), SLOT( setInputFileName(QString) ) );
         QObject::connect( this, SIGNAL( setOutputFileName(QString) ),
                           &Facade::getInstance(), SLOT( setOutputFileName(QString) ) );
-//        QObject::connect( this, SIGNAL( setLayerDescription(QVector<QPair<quint32,quint32> >) ),
-//                          &Facade::getInstance(), SLOT( setLayersDescription(QVector<QPair<quint32,quint32> >) ) );
         QObject::connect( this, SIGNAL( setAlpha( double ) ),
                           &Facade::getInstance(), SLOT( setAlhpa( double ) ) );
-//        QObject::connect( this, SIGNAL( setBeta( double ) ),
-//                          &Facade::getInstance(), SLOT( setBeta( double ) ) );
     }
 //    */
 }
@@ -122,8 +116,7 @@ void MainWindow::displayResults()
     ui->qwtPlot->detachItems( QwtPlotItem::Rtti_PlotCurve, false );
     ui->qwtPlot->replot();
 
-    const auto errorVector = Facade::getInstance().getErrors(); // TODO obtain error
-//    std::vector< long double > errorVector;
+    const auto errorVector = Facade::getInstance().getErrors();
     QVector < QPointF > points( errorVector.size() );
     quint32 counter = 0;
     auto pointsIt = points.begin();
@@ -136,8 +129,6 @@ void MainWindow::displayResults()
  //   curve.setSamples( QPolygonF ( points ) );
     curve.attach( ui->qwtPlot );
     ui->qwtPlot->replot();
-    // TODO Oleksandr Halushko get testing error results from the facade
-    // TODO Oleksandr Halushko display error results
 }
 
 
@@ -192,18 +183,6 @@ void MainWindow::showResults(const Dataset & data)
     }
 }
 
-/*!
- * \brief MainWindow::getLayerInfo
- * \return
- */
-LayersInfo MainWindow::getLayerInfo()
-{
-    LayersInfo result;
-    for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it ){
-        result.append( LayerDescription((*it).neuronsNumber->value(), (*it).inputsNumber->value() ) );
-    }
-    return result;
-}
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
@@ -217,7 +196,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
  */
 MainWindow::~MainWindow()
 {
-    // TODO stop network
+    Facade::getInstance().stopProcess();
     delete zoom;
     delete ui;
 }
@@ -244,25 +223,11 @@ void MainWindow::openOutputFile()
 }
 
 /*!
- * \brief MainWindow::setInitialLayerInfo
- * \param val
- */
-void MainWindow::setInitialLayerInfo(const LayerDescription &val )
-{
-    //ui->inputsNumber->setText( QString::number( val.first ) );
-    //ui->outputsNumber->setText( QString::number( val.second ) );
-    //ui->numberOfLayers->setValue( 1 );
-    layers.first().neuronsNumber->setValue( val.second );
-    layers.first().inputsNumber->setValue( val.first );
-}
-
-/*!
  * \brief MainWindow::start
  */
 void MainWindow::start()
 {
-    // TODO set network description
-    // TODO start network
+    Facade::getInstance().startProcess();
     ui->stopButton->show();
 }
 
@@ -274,14 +239,4 @@ void MainWindow::sendAlpha()
     const double mantis = ui->alphaMantiss->value();
     const int deg = ui->alphaDegree->value();
     emit setAlpha( mantis * pow10( deg ) );
-}
-
-/*!
- * \brief MainWindow::sendBeta
- */
-void MainWindow::sendBeta()
-{
-    //const double mantis = ui->betaMantiss->value();
-   // const int deg = ui->betaDegree->value();
-   // emit setBeta( mantis * pow10( deg ) );
 }

@@ -1,5 +1,5 @@
-#ifndef NETWORK_HPP
-#define NETWORK_HPP
+#ifndef ANNETWORK_HPP
+#define ANNETWORK_HPP
 
 #include <vector>
 #include <list>
@@ -13,6 +13,7 @@
 #include "Utils.hpp"
 
 std::tuple< std::vector<long double>, std::vector<std::vector<long double> >, std::vector<long double> >
+inline
 training(const std::vector< std::vector< long double > >& train_in,
          const std::vector< long double > & train_out,
          const std::size_t hidden_neurons,
@@ -21,6 +22,15 @@ training(const std::vector< std::vector< long double > >& train_in,
          const long double desired_accuracy,
          volatile bool * reset)
 {
+
+    assert( hidden_neurons > 0 );
+    assert( desired_accuracy > 0.0 );
+    assert( max_epoch > 0 );
+    assert( nullptr != reset );
+    assert( train_in.size() == train_out.size() );
+
+
+
     auto train_inp = train_in;
     auto local_train_out = train_out;
     const auto mu_inp = mean( train_inp );
@@ -65,6 +75,7 @@ training(const std::vector< std::vector< long double > >& train_in,
         const auto error = pred - local_train_out;
         const auto error_sq = error ^ 2;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
+        std::cerr << "err[ i ]: " << err[ i ] << std::endl;
 
         if ( *reset ) break;
         if ( err[ i ] <= desired_accuracy ) break;
@@ -73,18 +84,21 @@ training(const std::vector< std::vector< long double > >& train_in,
     return std::move(std::make_tuple(weight_hidden_output, weight_input_hidden, err));
 }
 
-std::vector< long double > eval(std::vector<std::vector<long double> >& train_test,
-                                const std::vector<long double>& weight_hidden_output,
-                                const std::vector<std::vector<long double>> weight_input_hidden)
+std::vector< long double >
+inline
+eval(const std::vector<std::vector<long double> >& train_test,
+     const std::vector<long double>& weight_hidden_output,
+     const std::vector<std::vector<long double>> weight_input_hidden)
 {
     auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
     return std::move(pred);
 }
 
 std::vector< long double >
+inline
 test_error(const std::vector< long double > & test_out,
-                const std::vector< long double > & pred,
-                const std::vector< long double > & train_out)
+           const std::vector< long double > & pred,
+           const std::vector< long double > & train_out)
 {
     const auto a = test_out;//(train_out * sigma_out) + mu_out;
     const auto mu_out = mean( train_out );
@@ -101,4 +115,4 @@ test_error(const std::vector< long double > & test_out,
 }
 
 
-#endif // NETWORK_HPP
+#endif // ANNETWORK_HPP

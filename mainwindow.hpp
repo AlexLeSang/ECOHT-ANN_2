@@ -64,9 +64,7 @@ public:
 signals:
     void setInputFileName( const QString fileName );
     void setOutputFileName( const QString fileName );
-    void setLayerDescription( const QVector<QPair<quint32,quint32> > info );
     void setAlpha( double );
-    void setBeta( double );
 
 private slots:
     void start();
@@ -74,9 +72,7 @@ private slots:
     void openOutputFile();
     void displayResults();
     void saveImage();
-    void setInitialLayerInfo( const LayerDescription & );
     void sendAlpha();
-    void sendBeta();
 
 private:
     void showResults( const Dataset& data );
@@ -86,8 +82,6 @@ private:
     Ui::MainWindow *ui;
     QwtPlotZoomer *zoom;
     QwtPlotCurve curve;
-    LayersGUI layers;
-    qint32 currLayerNumber;
 };
 
 #endif // MAINWINDOW_H
