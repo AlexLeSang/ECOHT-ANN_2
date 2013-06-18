@@ -97,6 +97,7 @@ int main() {
 
     //    std::cerr << "res: " << res << std::endl;
     const std::size_t hidden_neurons = 4;
+    const std::size_t epochs = 500;
 
     const auto X1 = linspace( 0.0, 0.5, 10 );
     const auto X2 = linspace( 0.0, 0.5, 10 );
@@ -211,11 +212,14 @@ int main() {
 
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
+#ifdef FAKE_RAND
+
+#else
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
+#endif
 
-
-    std::cerr << weight_hidden_output << weight_input_hidden ;
+  //  std::cerr << weight_hidden_output << weight_input_hidden ;
 //    {
 //        auto a = randn( 100 );
 //        std::cerr << a;
@@ -223,6 +227,17 @@ int main() {
 //        auto b = randn( 10, 10);
 //        std::cerr << b;
 //    }
+
+    for( auto i = 0; i < epochs; ++i ){
+        const auto& alr = hlr;
+        const auto blr = alr / 10.0;
+
+        for( auto j = 0; j < patterns; ++j ){
+            const auto patnum = static_cast<std::size_t>( round( rand_range(0.0,1.0) * patterns + 0.5 ) ) % patterns;
+            const auto train_pat = train_inp[ patnum ];
+            const auto act = train_out[ patnum ];
+        }
+    }
     return 0;
 }
 

@@ -521,4 +521,14 @@ randn( const std::size_t n , const std::size_t m)
     return randn_vector;
 }
 
+template< typename T = double >
+inline
+std::vector< T >
+round( const std::vector< T >& v)
+{
+    std::vector< T > round_vector( v.size() );
+    std::transform( v.cbegin(), v.cend(), round_vector.begin(), round_vector.end(), std::round );
+    return std::move(round_vector);
+}
+
 #endif // UTILS_HPP
