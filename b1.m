@@ -112,7 +112,7 @@ for iter = 1:epochs
         end
 	patnum = 85;
         %set the current pattern
-        this_pat = train_inp(patnum,:)
+        this_pat = train_inp(patnum,:);
         act = train_out(patnum,1);
         
         %calculate the current error for this pattern
@@ -125,7 +125,7 @@ for iter = 1:epochs
 
         % adjust weight hidden - output
         delta_HO = error.*blr .*hval;
-        weight_hidden_output = weight_hidden_output - delta_HO'
+        weight_hidden_output = weight_hidden_output - delta_HO';
 
         % adjust the weights input - hidden
        % a = alr.*error.*weight_hidden_output';
@@ -133,14 +133,17 @@ for iter = 1:epochs
       %  m2 = a * m1;
        % m3 = m2 * this_pat;
         delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat;
-        weight_input_hidden = weight_input_hidden - delta_IH'
-        exit(-1)
+        weight_input_hidden = weight_input_hidden - delta_IH';
         
     end
     % -- another epoch finished
     
     %plot overall network error at end of each epoch
-    pred = weight_hidden_output*tanh(train_inp*weight_input_hidden)';
+    train_inp
+    weight_input_hidden
+    p1 = tanh(train_inp*weight_input_hidden)'
+    pred = weight_hidden_output*p1;
+        exit(-1)
     error = pred' - train_out;
     err(iter) =  (sum(error.^2))^0.5;
     

@@ -285,6 +285,7 @@ int main() {
     //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
     epochs = 1;
+    std::vector< double > err(epochs);
 
     for( std::size_t i = 0; i < epochs; ++i ) {
         const auto alr = hlr;
@@ -326,14 +327,20 @@ int main() {
             const auto m2 = 1.0 - (hval^2);
             //std::cerr << "m3: " << m3 << std::endl;
             const auto m3 = dot_operator( m1, m2, std::multiplies< double >());
-            std::cerr << "m3: " << m3 << std::endl;
+            //std::cerr << "m3: " << m3 << std::endl;
             const auto m4 = vec_to_vecvec( m3 );
             const auto delta_IH =  m4 * this_pat;
-            std::cerr << "delta_IH: " << delta_IH << std::endl;
-
-            exit( -1 );
-
+            //std::cerr << "delta_IH: " << delta_IH << std::endl;
+            weight_input_hidden = weight_input_hidden - trans( delta_IH );
+            std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+//            pred = weight_hidden_output*tanh(train_inp*weight_input_hidden)';
+//                error = pred' - train_out;
+//                err(iter) =  (sum(error.^2))^0.5;
         }
+        const auto p1 = feval([]( const double& v){return tanh(v);}, train_inp* weight_input_hidden);
+        std::cerr << "p1: " << p1 << std::endl;
+        const auto pred = weight_hidden_output * p1;
+        exit( -1 );
     }
     return 0;
 }
