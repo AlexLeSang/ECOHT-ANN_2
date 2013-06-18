@@ -1,14 +1,43 @@
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+debug {
+    QT       += testlib
+    CONFIG   += console
+}
+
+TARGET = ECOHT-ANN_2
 TEMPLATE = app
-CONFIG += console
-CONFIG -= app_bundle
-CONFIG -= qt
 
-QMAKE_CXXFLAGS += -std=c++11
 
-SOURCES += main.cpp
+QMAKE_CXXFLAGS += -std=c++0x
+
+LIBS += -L/usr/lib -lqwt
+
+INCLUDEPATH += /usr/include/qwt
+DEPENDPATH += /usr/include/qwt
+
+FORMS += \
+    mainwindow.ui
+
+
+SOURCES += main.cpp\
+      mainwindow.cpp
 
 HEADERS += \
     Network.hpp \
-    Utils.hpp
+    Utils.hpp \
+    mainwindow.hpp
 
-#DEFINES += "FAKE_RAND"
+
+OTHER_FILES += \
+    data1.dat \
+    data.dat \
+    data2.dat \
+    plotres.m \
+    data4.dat \
+    simple_data.dat \
+    parabolic_data.dat \
+    data7.dat \
+    data6.dat
