@@ -183,21 +183,25 @@ int main() {
     const auto two_mul_x1 = 2.0 * x;
     std::cerr << "two_mul_x1: " << two_mul_x1 << std::endl;
 
-    const std::vector< double > a1 = { 2 };
-    const std::vector< double > a2 = { 3 };
-    const std::vector< double > a3 = { 4 };
-    const auto a12 = merge( a1, a2 );
-    const auto a = merge( a12, a3 );
-    std::cerr << "a: " << a << std::endl;
-    const std::vector< double > b = { 5, 6, 7 };
-    std::cerr << "b: " << b << std::endl;
-    const auto aTb = a * b;
-    std::cerr << "aTb: " << aTb << std::endl;
-
     const std::vector< double > bb = { 1, 2, 3, 4 };
     std::cerr << "bb: " << bb << std::endl;
     const auto bbt = vec_to_vecvec( bb );
     std::cerr << "bbt: " << bbt << std::endl;
+
+    std::cerr << "y_div: " << y_div << std::endl;
+
+    const auto y_div_t = trans( y_div );
+    std::cerr << "y_div_t: " << y_div_t << std::endl;
+
+    const auto y_div_t_2 = y_div_t * 2.0;
+    std::cerr << "y_div_t_2: " << y_div_t_2 << std::endl;
+
+    const auto dd = y_div_t_2 - y_div_t;
+    std::cerr << "dd: " << dd << std::endl;
+
+    const auto dd_1 = y_div_t_2 + y_div_t;
+    std::cerr << "dd_1: " << dd_1 << std::endl;
+
 
     exit( -1 );
 //    */
