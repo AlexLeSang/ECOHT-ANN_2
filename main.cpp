@@ -7,6 +7,7 @@
 #include <set>
 #include <tuple>
 #include <cassert>
+#include <chrono>
 
 #include "Utils.hpp"
 #include "Network.hpp"
@@ -19,87 +20,10 @@ auto generate_range = []( const long double start, const long double step, int &
 
 int main() {
 
-    /* Sin X
-    constexpr unsigned int number_of_points = 500;
-    constexpr double a = 0.0;
-    constexpr double b = 1.0;
-    constexpr double step = ( b - a ) / (number_of_points - 1);
+    const auto t1 = std::chrono::high_resolution_clock::now();
 
-    std::vector< double > x( number_of_points );
-    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
-        x[ i ] = step * i;
-    }
-
-    //    std::cerr << "x: " << x << std::endl;
-
-    std::vector< double > sinx( x.size() );
-    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
-        sinx[ i ] = std::sin( M_PI * x[ i ] );
-    }
-
-    //    std::cerr << "sinx: " << sinx << std::endl;
-    // Create dataset
-    std::vector< std::pair< double, double > > dataset_vector = merge( x, sinx );
-    std::cerr << "dataset_vector: " << dataset_vector << std::endl;
-
-    // Split dataset
-
-    auto splitted_dataset = split( dataset_vector, std::make_tuple( 0.7, 0.3 ) );
-
-    const auto & training_res = std::move( std::get<0>( splitted_dataset ) );
-    const auto & testing_res = std::move( std::get<1>( splitted_dataset ) );
-
-//        std::cerr << "training_res: " << training_res.size() << ":: " << training_res << std::endl;
-//        std::cerr << "testing_res: " << testing_res.size() << ":: " << testing_res << std::endl;
-
-    const std::vector< unsigned int > layers_description = { 1, 20, 1 };
-    network< double, double, TanhFunction, TanhFunctionDerivative > ( layers_description, training_res, testing_res, 1e-2, 60000, 0.01, 0.0001 );
-
-//    std::vector< double > x1 = { 0, 0, 1, 1 };
-//    std::vector< double > x2 = { 0, 1, 0, 1 };
-//    std::vector< double > y1 = { 0, 1, 1, 0 };
-
-    std::vector< double > x1 = { 0, 0 };
-    std::vector< double > x2 = { 1, 0 };
-    std::vector< double > y1 = { 1, 0 };
-
-
-    const auto argument = merge_to_vector( x1, x2 );
-    std::cerr << "argument: " << argument << std::endl;
-
-    const auto training_dataset = merge( argument, y1 );
-    std::cerr << "training_dataset: " << training_dataset << std::endl;
-
-    const std::vector< unsigned int > layers_description = { 2, 4, 1 };
-//    typename std::remove_cv <decltype( argument )>::type
-    network< std::vector<double>, double, LogisticFunction, LogisticFunctionDerivative > ( layers_description,
-                                                                              training_dataset, training_dataset, 1e-4, 9000, 0.9, 0.1 );
-    */
-
-    /*
-    //    constexpr unsigned int number_of_points = 20;
-    //    constexpr double a = 0.0;
-    //    constexpr double b = 1.0;
-    //    constexpr double step = ( b - a ) / (number_of_points - 1);
-
-    //    std::vector< double > x( number_of_points );
-    //    for ( unsigned int i = 0; i < number_of_points; ++ i ) {
-    //        x[ i ] = step * i;
-    //    }
-
-    //    std::cerr << "x: " << x << std::endl;
-
-    //    std::vector< double > x1( number_of_points );
-    //    std::generate( x1.begin(), x1.end(), std::bind( []( const double step, int & i ) {return step * 2 * i++;}, step, 0 ) );
-    //    std::cerr << "x1: " << x1 << std::endl;
-
-
-    //    const auto res = std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), 0 );
-
-    */
-    //    std::cerr << "res: " << res << std::endl;
     const std::size_t hidden_neurons = 30;
-    const std::size_t epochs = 1000;
+    const std::size_t epochs = 700;
     const auto earlystop = false;
     const auto reset = false;
     const auto hlr = 0.6;
@@ -128,34 +52,35 @@ int main() {
     const auto sigma_out = stand( train_out );
     train_out = ( train_out - mu_out ) / sigma_out;
     const auto patterns = size( train_inp ).first;
-    std::cerr << "patterns: " << patterns << std::endl;
-    auto bias = ones( patterns );
-    train_inp = merge( train_inp, bias );
+    std::cout << "patterns: " << patterns << std::endl;
+//    const auto bias = ones( patterns );
+//    train_inp = merge( train_inp, bias );
+    train_inp = merge( train_inp, ones( patterns ) );
     const auto inputs = size( train_inp ).second;
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
     std::vector< long double > err( epochs );
     for( std::size_t i = 0; i < epochs; ++i ) {
+
+        if ( reset ) {
+            std::cout << "Interrupt at: " << i << std::endl;
+        }
+
         const auto alr = hlr;
         const auto blr = alr / 10.0;
         for( std::size_t j = 0; j < patterns; ++j ){
             const auto patnum = ( static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) - 1 ) % patterns;
-            const auto this_pat = train_inp[ patnum ];
+            const auto & this_pat = train_inp[ patnum ];
             const auto act = train_out[ patnum ];
             const auto hval = feval( []( const long double & v ){ return std::tanh( v ); }, this_pat * weight_input_hidden );
             const auto pred = hval * weight_hidden_output;
             const auto error = pred - act;
             const auto delta_HO = hval * error * blr;
             weight_hidden_output = weight_hidden_output - delta_HO;
-            const auto m1 = weight_hidden_output * alr * error;
-            const auto m2 = 1.0 - (hval^2);
-            const auto m3 = dot_operator( m1, m2, std::multiplies< long double >());
-            const auto m4 = vec_to_vecvec( m3 );
-            const auto delta_IH =  m4 * this_pat;
+            const auto delta_IH =  vec_to_vecvec( dot_operator( weight_hidden_output * alr * error, ( 1.0 - (hval^2) ), std::multiplies< long double >() ) ) * this_pat;
             weight_input_hidden = weight_input_hidden - trans( delta_IH );
         }
-        const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden );
-        const auto pred = weight_hidden_output * trans( p1 );
+        const auto pred = weight_hidden_output * trans( feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden ) );
         const auto error = pred - train_out;
         const auto error_sq = error ^ 2;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
@@ -168,17 +93,26 @@ int main() {
     const auto mu_test = mean( train_test );
     const auto sigma_test = stand( train_test );
     train_test = ( train_test - mu_test[ 0 ] ) / sigma_test[ 0 ];
-    train_test = merge( train_test , bias);
+    train_test = merge( train_test, ones( train_test.size() ) );
     const auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
 
-    const auto a = (train_out * sigma_out) + mu_out;
-    const auto b = (pred * sigma_out) + mu_out;
+    const auto a = ( train_out * sigma_out ) + mu_out;
+    const auto b = ( pred * sigma_out ) + mu_out;
     const auto act_pred_err = feval( []( const long double & v ){ return std::abs( v ); }, b - a );
 
     const auto c = std::accumulate( act_pred_err.cbegin(), act_pred_err.cend(), 0.0, std::plus< long double >() ) / act_pred_err.size();
     const auto cc = std::max_element( act_pred_err.cbegin(), act_pred_err.cend() );
-    std::cerr << "Average arror: " << c << std::endl;
-    std::cerr << "Max error: " << *cc << std::endl;
+    std::cout << "Average arror: " << c << std::endl;
+    std::cout << "Max error: " << *cc << std::endl;
+
+
+    const auto t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "This shit took\n"
+              << std::chrono::duration_cast<std::chrono::hours>(t2 - t1).count() << " h\n"
+              << std::chrono::duration_cast<std::chrono::minutes>(t2 - t1).count() << " m\n"
+              << std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count() << " sec\n"
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
+
     return 0;
 }
 
