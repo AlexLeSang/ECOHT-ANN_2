@@ -227,9 +227,9 @@ int main() {
 
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
-#ifdef FAKE_RAND
 
-#else
+
+
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     // TODO check weight_input_hidden
 //    std::cerr << "weight_input_hidden.size: " << size( weight_input_hidden ) << std::endl;
@@ -238,9 +238,9 @@ int main() {
     // TODO check weight_hidden_output
 //    std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
 //    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
-#endif
 
     epochs = 1;
+    //std::cerr << "Weight i - h" << weight_input_hidden << " \n " << " Weight h - o" << weight_hidden_output << "\n";
 
     for( std::size_t i = 0; i < epochs; ++i ) {
         const auto alr = hlr;
