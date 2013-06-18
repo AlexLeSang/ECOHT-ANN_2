@@ -492,16 +492,35 @@ double randd()
 // TODO dot product
 //Use dot_operator for that
 
-// TODO inner product
 template< typename T >
 inline
 T
-operator * ( const std::vector< T >& v1, const std::vector< T >& v2)
+operator * ( const std::vector< T >& v1, const std::vector< T >& v2 )
 {
-    T res;
-    std::inner_product(v1.cbegin(), v1.cend(), v2.cbegin(), 0.0, std::plus< T >(), std::multiplies< T >() );
-    return std::move( res );
+    T res = std::inner_product(v1.cbegin(), v1.cend(), v2.cbegin(), 0.0, std::plus< T >(), std::multiplies< T >() );
+    return res;
 }
+
+template< typename T >
+inline
+std::vector< T >
+operator * ( const std::vector< T > & v1, const std::vector< std::vector< T > > & vv2 )
+{
+    const auto vv2_size_pair = size( vv2 );
+    assert( v1.size() == vv2_size_pair.first );
+
+    std::vector< T > column_result( vv2_size_pair.second );
+    for (  std::size_t i = 0; i < column_result.size(); ++ i ) {
+        T inn_prod = 0.0;
+        for ( std::size_t j = 0; j < vv2_size_pair.first; ++ j ) {
+            inn_prod += v1[ j ] * vv2[ j ][ i ];
+        }
+        column_result[ i ] = inn_prod;
+    }
+
+    return std::move( column_result );
+}
+
 
 template< typename T = double >
 inline
@@ -514,7 +533,7 @@ randn( const std::size_t n )
     std::generate( randn_vector.begin(), randn_vector.end(), [&](){
         return distribution(generator);
     } );
-    return randn_vector;
+    return std::move( randn_vector );
 }
 
 template< typename T = double >
@@ -531,7 +550,7 @@ randn( const std::size_t n , const std::size_t m)
             return distribution(generator);
         } );
     } );
-    return randn_vector;
+    return std::move( randn_vector );
 }
 
 template< typename T = double >
@@ -540,8 +559,8 @@ std::vector< T >
 round( const std::vector< T >& v)
 {
     std::vector< T > round_vector( v.size() );
-    std::transform( v.cbegin(), v.cend(), round_vector.begin(), round_vector.end(), std::round );
-    return std::move(round_vector);
+    std::transform( v.cbegin(), v.cend(), round_vector.begin(), std::round );
+    return std::move( round_vector );
 }
 
 #endif // UTILS_HPP

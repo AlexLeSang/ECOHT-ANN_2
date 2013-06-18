@@ -96,8 +96,8 @@ int main() {
     //    const auto res = std::inner_product( x.cbegin(), x.cend(), x1.cbegin(), 0 );
 
     //    std::cerr << "res: " << res << std::endl;
-    const std::size_t hidden_neurons = 4;
-    const std::size_t epochs = 500;
+    const std::size_t hidden_neurons = 30;
+    std::size_t epochs = 500; // TODO should be constant
 
     const auto X1 = linspace( 0.0, 0.5, 10 );
     const auto X2 = linspace( 0.0, 0.5, 10 );
@@ -205,10 +205,25 @@ int main() {
     const auto inputs = size( train_inp ).second;
 //    std::cerr << "inputs: " << inputs << std::endl;
 
-
     const auto earlystop = false;
     const auto reset = false;
     const auto hlr = 0.5;
+
+
+    /* Inner prod test
+    const std::vector< double > a = { 1, 2, 3 };
+    std::cerr << "a: " << a << std::endl;
+
+    const std::vector< double > b1 = { 1, 2, 3 };
+    const std::vector< double > b2 = { 4, 5, 6 };
+    const std::vector< double > b3 = { 6, 7, 8 };
+    const auto b12 = merge( b1, b2 );
+    const auto b = merge( b12, b3 );
+    std::cerr << "b: " << b << std::endl;
+    const auto ab = a * b;
+    std::cerr << "ab: " << ab << std::endl;
+    exit( -1 );
+     */
 
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
@@ -216,26 +231,42 @@ int main() {
 
 #else
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
+    // TODO check weight_input_hidden
+//    std::cerr << "weight_input_hidden.size: " << size( weight_input_hidden ) << std::endl;
+//    std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5 ) / 10.0;
+    // TODO check weight_hidden_output
+//    std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
+//    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 #endif
 
-  //  std::cerr << weight_hidden_output << weight_input_hidden ;
-//    {
-//        auto a = randn( 100 );
-//        std::cerr << a;
+    epochs = 1;
 
-//        auto b = randn( 10, 10);
-//        std::cerr << b;
-//    }
-
-    for( auto i = 0; i < epochs; ++i ){
-        const auto& alr = hlr;
+    for( std::size_t i = 0; i < epochs; ++i ) {
+        const auto alr = hlr;
+//        std::cerr << "alr: " << alr << std::endl;
         const auto blr = alr / 10.0;
+//        std::cerr << "blr: " << blr << std::endl;
 
-        for( auto j = 0; j < patterns; ++j ){
+        for( std::size_t j = 0; j < patterns; ++j ){
             const auto patnum = static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) % patterns;
-            const auto train_pat = train_inp[ patnum ];
+//            std::cerr << "patnum: " << patnum << std::endl;
+            const auto this_pat = train_inp[ patnum ];
+//            std::cerr << "train_pat: " << train_pat << std::endl;
             const auto act = train_out[ patnum ];
+//            std::cerr << "act: " << act << std::endl;
+
+            const auto xx = this_pat * weight_input_hidden;
+            // TODO check xx
+            std::cerr << "size(xx): " << size( xx ) << std::endl;
+            const auto tanhxx = feval( []( const double & v ){ return std::tanh(v); }, xx );
+            // TODO check tanhxx
+            std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
+            const auto hval = tanxx;
+            // TODO check hval
+
+            exit( -1 );
+
         }
     }
     return 0;
