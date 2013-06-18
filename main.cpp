@@ -225,10 +225,17 @@ int main() {
     exit( -1 );
      */
 
+    /* Power test
+    std::vector< double > x = { 1, 2, 3, 4 };
+    std::cerr << "x: " << x << std::endl;
+    const auto xto2 = x ^ 2;
+    std::cerr << "xto2: " << xto2 << std::endl;
+    exit( -1 );
+    */
+
+
 //    weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
 //    weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
-
-
 
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5 ) / 10.0;
     // TODO check weight_input_hidden

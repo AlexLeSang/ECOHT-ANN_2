@@ -460,6 +460,17 @@ operator / ( const std::vector< std::vector < T > > & vv, const T num )
 }
 
 
+template< typename T, typename I = uint32_t >
+inline
+std::vector< T >
+operator ^ ( const std::vector< T > & v, const I power )
+{
+    std::vector< T > res( v.size() );
+    std::transform( v.cbegin(), v.cend(), res.begin(), [&]( const double & v ) { return std::pow( v, power ); } );
+    return std::move( res );
+}
+
+
 template< typename T = double >
 inline
 std::vector< T >
