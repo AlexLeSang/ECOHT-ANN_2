@@ -194,6 +194,10 @@ int main() {
     const auto aTb = a * b;
     std::cerr << "aTb: " << aTb << std::endl;
 
+    const std::vector< double > bb = { 1, 2, 3, 4 };
+    std::cerr << "bb: " << bb << std::endl;
+    const auto bbt = vec_to_vecvec( bb );
+    std::cerr << "bbt: " << bbt << std::endl;
 
     exit( -1 );
     */

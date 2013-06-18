@@ -519,6 +519,19 @@ operator ^ ( const std::vector< T > & v, const I power )
     return std::move( res );
 }
 
+template < typename T >
+std::vector< std::vector< T > >
+vec_to_vecvec( const std::vector< T > & v )
+{
+    std::vector< std::vector< T > > res( v.size() );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        std::vector< T > vt( 1 );
+        vt[ 0 ] = v[ i ];
+        res[ i ] = std::move( vt );
+    }
+    return std::move( res );
+}
+
 
 template< typename T = double >
 inline
