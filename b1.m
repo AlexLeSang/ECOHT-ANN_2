@@ -118,7 +118,7 @@ for iter = 1:epochs
         %calculate the current error for this pattern
         
         xx = this_pat*weight_input_hidden;
-        hval = (tanh(xx))';
+        hval = (tanh(xx))'
         pred = hval'*weight_hidden_output';
         
         error = pred - act;
@@ -128,8 +128,12 @@ for iter = 1:epochs
         weight_hidden_output = weight_hidden_output - delta_HO';
 
         % adjust the weights input - hidden
-        delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
+        a = alr.*error.*weight_hidden_output';
+        m1 = (1-(hval.^2));
+        m2 = m1 * this_pat;
+        m2
         exit(-1)
+        delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
         weight_input_hidden = weight_input_hidden - delta_IH';
         
     end

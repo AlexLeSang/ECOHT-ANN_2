@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-//    /* Operator test
+   /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -184,7 +184,7 @@ int main() {
     std::cerr << "two_mul_x1: " << two_mul_x1 << std::endl;
 
     exit( -1 );
-//    */
+    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
@@ -274,13 +274,13 @@ int main() {
             const auto xx = this_pat * weight_input_hidden;
             // TODO check xx
             //std::cerr << "xx: " << xx;
-            std::cerr << "size(xx): " << size( xx ) << std::endl;
+            //std::cerr << "size(xx): " << size( xx ) << std::endl;
             const auto tanhxx = feval( []( const double & v ){ return std::tanh(v); }, xx );
             // TODO check tanhxx
             //std::cerr << "tanhxx: " << tanhxx ;
-            std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
+            //std::cerr << "size( tanhxx ): " << size( tanhxx ) << std::endl;
             const auto hval = tanhxx;
-            std::cerr << "hval: " << hval << std::endl;
+            //std::cerr << "hval: " << hval << std::endl;
             //std::cerr << "hval: " << hval;
             // TODO check hval
             const auto pred = hval * weight_hidden_output;
@@ -292,10 +292,13 @@ int main() {
             weight_hidden_output = weight_hidden_output - delta_HO;
             //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
             //delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
-            const auto m1 = 1 - hval^2;
+            const auto m1 = 1.0 - (hval^2);
+            //std::cerr << "m1: " << m1 << std::endl;
             const auto m2 = m1 * this_pat;
-            const auto delta_IH =  weight_hidden_output * alr * error * m2;
+            std::cerr << "m2: " << m2 << std::endl;
             exit( -1 );
+            const auto delta_IH =  weight_hidden_output * alr * error * m2;
+            std::cerr << "delta_IH: " << delta_IH << std::endl;
 
         }
     }
