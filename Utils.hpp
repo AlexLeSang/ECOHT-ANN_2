@@ -538,6 +538,24 @@ operator * ( const std::vector< std::vector < T > > & vv, const T num )
 
 template< typename T >
 inline
+std::vector < T >
+operator * ( const std::vector < T > & v,  const std::vector< std::vector < T > > & vv )
+{
+    const auto vv_sp = size( vv );
+    assert( v.size() == vv_sp.first );
+    std::vector< T > res( vv_sp.second );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        for ( std::size_t j = 0; j < vv_sp.first; ++ j ) {
+            res[ i ] += v[ j ] * vv[ j ] [ j ];
+        }
+    }
+
+    return std::move( res );
+}
+
+
+template< typename T >
+inline
 std::vector< std::vector < T > >
 operator * ( const std::vector< std::vector < T > > & vv, const std::vector< T > & v )
 {
@@ -688,26 +706,6 @@ operator * ( const std::vector< T >& v1, const std::vector< T >& v2 )
 {
     T res = std::inner_product(v1.cbegin(), v1.cend(), v2.cbegin(), 0.0, std::plus< T >(), std::multiplies< T >() );
     return res;
-}
-
-template< typename T >
-inline
-std::vector< T >
-operator * ( const std::vector< T > & v1, const std::vector< std::vector< T > > & vv2 )
-{
-    const auto vv2_size_pair = size( vv2 );
-    assert( v1.size() == vv2_size_pair.first );
-
-    std::vector< T > column_result( vv2_size_pair.second );
-    for (  std::size_t i = 0; i < column_result.size(); ++ i ) {
-        T inn_prod = 0.0;
-        for ( std::size_t j = 0; j < vv2_size_pair.first; ++ j ) {
-            inn_prod += v1[ j ] * vv2[ j ][ i ];
-        }
-        column_result[ i ] = inn_prod;
-    }
-
-    return std::move( column_result );
 }
 
 

@@ -151,7 +151,7 @@ int main() {
     */
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
 
-    /* Operator test
+//    /* Operator test
     const auto x1 = range( 1.0, 1.0, 5.0 );
     std::cerr << "x1: " << x1 << std::endl;
     const auto mutated_x1_minus = x1 - 2.0;
@@ -213,7 +213,7 @@ int main() {
     std::cerr << "y_d_d_10: " << y_d_d_10 << std::endl;
 
     exit( -1 );
-    */
+//    */
 
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
