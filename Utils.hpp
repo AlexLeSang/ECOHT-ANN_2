@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cmath>
 #include <utility>
+#include <random>
 
 //template< typename T > inline std::ostream & operator << ( std::ostream & os, const std::vector<T> & vector );
 
@@ -91,8 +92,10 @@ merge_to_pair( const std::vector<T> & vector_t, const std::vector<U> & vector_u 
     for ( std::size_t i = 0; i < result.size(); ++i ) {
         result[ i ] = std::make_pair( vector_t[ i ], vector_u[ i ] );
     }
-    return result;
+    return std::move(result);
 }
+
+//template < typename T > inline std::vector< std::vector<T> > merge( const std::vector< std::vector <T> > & vector_t, const std::vector<T> & vector_u );
 
 template < typename T >
 inline
@@ -435,7 +438,7 @@ operator / ( const std::vector< std::vector < T > > & vv, const T num )
 }
 
 
-template< typename T = double_t >
+template< typename T = double >
 inline
 std::vector< T >
 ones( const std::size_t n )
@@ -445,5 +448,35 @@ ones( const std::size_t n )
     return std::move( ones_vector );
 }
 
+template< typename T = double >
+inline
+std::vector< T >
+randn( const std::size_t n )
+{
+    std::vector< T > randn_vector( n );
+    std::default_random_engine generator;
+    std::normal_distribution< T > distribution;
+    std::generate( randn_vector.begin(), randn_vector.end(), [&](){
+        return distribution(generator);
+    } );
+    return randn_vector;
+}
+
+template< typename T = double >
+inline
+std::vector< std::vector< T > >
+randn( const std::size_t n , const std::size_t m)
+{
+    std::vector< std::vector< T > > randn_vector(n);
+    std::default_random_engine generator;
+    std::normal_distribution< T > distribution;
+    std::for_each( randn_vector.begin(), randn_vector.end(), [&]( std::vector< T >& val){
+        val.resize( m );
+        std::generate( val.begin(), val.end(), [&](){
+            return distribution(generator);
+        } );
+    } );
+    return randn_vector;
+}
 
 #endif // UTILS_HPP
