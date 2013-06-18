@@ -281,7 +281,11 @@ int main() {
             const auto delta_HO = hval * error * blr;
             //std::cerr << "delta_HO: " << delta_HO << std::endl;
             weight_hidden_output = weight_hidden_output - delta_HO;
-            std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+            //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+            //delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
+            const auto m1 = 1 - hval^2;
+            const auto m2 = m1 * this_pat;
+            const auto delta_IH =  weight_hidden_output * alr * error * m2;
             exit( -1 );
 
         }
