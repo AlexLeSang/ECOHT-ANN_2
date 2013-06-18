@@ -1,3 +1,4 @@
+function f = b1()
 clear,clc,close all 
 % MATLAB neural network back propagation code
 % by AliReza KashaniPour & Phil Brierley
@@ -198,4 +199,4 @@ mesh(X1,X2,vec2mat(b,10))
 %  plot3(X1,X2,Y_train, 'color','green','linewidth',2)
 %  plot(X1,Y_train)
 %  grid on,title(' Sin(2*pi.*X1)*Sin(2*pi.*X2) Y = Orginal result');
-
+end
