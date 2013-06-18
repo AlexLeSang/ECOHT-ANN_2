@@ -203,6 +203,15 @@ int main() {
     std::cerr << "dd_1: " << dd_1 << std::endl;
 
 
+    std::cerr << "y_div: " << y_div << std::endl;
+    std::cerr << "y_div_t: " << y_div_t << std::endl;
+
+    const auto y_d_d = y_div * y_div_t;
+    std::cerr << "y_d_d: " << y_d_d << std::endl;
+
+    const auto y_d_d_10 = feval( []( double & v ) { v *= 10.0; }, y_d_d );
+    std::cerr << "y_d_d_10: " << y_d_d_10 << std::endl;
+
     exit( -1 );
 //    */
 
