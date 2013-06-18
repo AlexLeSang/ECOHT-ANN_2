@@ -186,12 +186,19 @@ int main() {
     /* Ones test
     const auto b = ones( 5 );
     std::cerr << "b: " << b << std::endl;
+    const auto bb = ones( 5, 5 );
+    std::cerr << "bb: " << bb << std::endl;
      */
 
+    /* Zeros test
+    const auto z = zeros( 5 );
+    std::cerr << "z: " << z << std::endl;
+    const auto zz = zeros( 5, 5 );
+    std::cerr << "zz: " << zz << std::endl;
+    */
+
     auto bias = ones( patterns );
-    const auto& train_inp_ref = train_inp;
-    const auto& bias_ref = bias;
-    train_inp = merge( train_inp_ref, bias_ref );
+    train_inp = merge( train_inp, bias );
 //    std::cerr << "train_inp: " << train_inp << std::endl;
 
     const auto inputs = size( train_inp ).second;

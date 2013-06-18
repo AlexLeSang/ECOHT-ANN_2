@@ -441,12 +441,54 @@ operator / ( const std::vector< std::vector < T > > & vv, const T num )
 template< typename T = double >
 inline
 std::vector< T >
-ones( const std::size_t n )
+ones ( const std::size_t n )
 {
     std::vector< T > ones_vector( n );
     std::fill( ones_vector.begin(), ones_vector.end(), 1.0 );
     return std::move( ones_vector );
 }
+
+template< typename T = double >
+inline
+std::vector< std::vector < T >  >
+ones ( const std::size_t n, const std::size_t n1 )
+{
+    std::vector < std::vector< T > > ones_vector( n );
+    std::for_each( ones_vector.begin(), ones_vector.end(), [&]( std::vector< T > & v ) {
+        v.resize( n1 );
+        std::fill( v.begin(), v.end(), 1.0 );
+    } );
+    return std::move( ones_vector );
+}
+
+template< typename T = double >
+inline
+std::vector< T >
+zeros ( const std::size_t n )
+{
+    std::vector< T > ones_vector( n );
+    return std::move( ones_vector );
+}
+
+template< typename T = double >
+inline
+std::vector< std::vector < T >  >
+zeros ( const std::size_t n, const std::size_t n1 )
+{
+    std::vector < std::vector< T > > ones_vector( n );
+    std::for_each( ones_vector.begin(), ones_vector.end(), [&]( std::vector< T > & v ) {
+        v.resize( n1 );
+    } );
+    return std::move( ones_vector );
+}
+
+
+// TODO rand
+
+// TODO dot product
+
+// TODO inner product
+
 
 template< typename T = double >
 inline
