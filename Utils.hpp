@@ -268,6 +268,22 @@ dot_operator( const std::vector< T > & v1, const std::vector< T > & v2, F op )
     return std::move( res );
 }
 
+template < typename T >
+std::vector < std::vector< T > >
+trans( const std::vector < std::vector< T > > & vv )
+{
+    const auto vv_sp = size( vv );
+    std::vector < std::vector< T > > res( vv_sp.second );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        res[ i ].resize( vv_sp.first );
+        for ( std::size_t j = 0; j < res[ i ].size(); ++ j ) {
+            res[ i ][ j ] = vv[ j ] [ i ];
+        }
+    }
+
+    return std::move( res );
+}
+
 template < typename T, typename F >
 inline
 std::vector< T >
@@ -387,6 +403,24 @@ operator + ( const std::vector< std::vector < T > > & vv, const T num )
     return std::move( res );
 }
 
+
+template< typename T >
+inline
+std::vector< std::vector < T > >
+operator + ( const std::vector< std::vector < T > > & vv, const std::vector< std::vector < T > > & vv1 )
+{
+    const auto vv_sp = size( vv );
+    const auto vv_sp_1 = size( vv1 );
+    assert( vv_sp == vv_sp_1 );
+    std::vector< std::vector < T > > res = vv;
+    for ( std::size_t i = 0; i < vv_sp.first; ++ i ) {
+        for ( std::size_t j = 0; j < vv_sp.second; ++ j ){
+            res[ i ][ j ] += vv1[ i ][ j ];
+        }
+    }
+    return std::move( res );
+}
+
 template< typename T >
 inline
 std::vector< T >
@@ -428,6 +462,23 @@ operator - ( const std::vector< T >& v1, const std::vector< T >& v2 )
     std::vector< T > minus_res( v1.size() );
     std::transform( v1.cbegin(), v1.cend(), v2.cbegin(), minus_res.begin(), std::minus< T >() );
     return std::move( minus_res );
+}
+
+template< typename T >
+inline
+std::vector< std::vector < T > >
+operator - ( const std::vector< std::vector < T > > & vv, const std::vector< std::vector < T > > & vv1 )
+{
+    const auto vv_sp = size( vv );
+    const auto vv_sp_1 = size( vv1 );
+    assert( vv_sp == vv_sp_1 );
+    std::vector< std::vector < T > > res = vv;
+    for ( std::size_t i = 0; i < vv_sp.first; ++ i ) {
+        for ( std::size_t j = 0; j < vv_sp.second; ++ j ){
+            res[ i ][ j ] -= vv1[ i ][ j ];
+        }
+    }
+    return std::move( res );
 }
 
 template< typename T >
