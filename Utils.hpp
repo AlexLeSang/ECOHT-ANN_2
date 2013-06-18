@@ -303,7 +303,10 @@ feval( F op, const std::vector< std::vector< T > > & arg1 )
     const auto sp = size( arg1 );
     std::vector< std::vector< T > > res = arg1;
     for ( std::size_t i = 0; i < sp.first; ++ i ) {
-        std::for_each( res[ i ].begin(), res[ i ].end(), op );
+//        std::for_each( res[ i ].begin(), res[ i ].end(), op );
+        for ( std::size_t j = 0; j < sp.second; ++ j ) {
+            res[ i ][ j ] = op( arg1[ i ][ j ] );
+        }
     }
     return std::move( res );
 }
