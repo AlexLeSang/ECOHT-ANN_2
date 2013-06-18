@@ -9,7 +9,6 @@ SOURCES += main.cpp
 
 HEADERS += \
     Network.hpp \
-    Utils.hpp \
-    ActivationFunction.hpp
+    Utils.hpp
 
 #DEFINES += "FAKE_RAND"
