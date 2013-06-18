@@ -400,6 +400,28 @@ operator - ( const std::vector< std::vector < T > > & vv, const T num )
 template< typename T >
 inline
 std::vector< T >
+operator - ( const std::vector< T >& v1, const std::vector< T >& v2 )
+{
+    assert( v1.size() == v2.size() );
+    std::vector< T > minus_res( v1.size() );
+    std::transform( v1.cbegin(), v1.cend(), v2.cbegin(), minus_res.begin(), std::minus< T >() );
+    return std::move( minus_res );
+}
+
+template< typename T >
+inline
+std::vector< T >
+operator + ( const std::vector< T >& v1, const std::vector< T >& v2 )
+{
+    assert( v1.size() == v2.size() );
+    std::vector< T > plus_res( v1.size() );
+    std::transform( v1.cbegin(), v1.cend(), v2.cbegin(), plus_res.begin(), std::plus< T >() );
+    return std::move( plus_res );
+}
+
+template< typename T >
+inline
+std::vector< T >
 operator * ( const std::vector< T > & v, const T num )
 {
     std::vector< T > res = v;

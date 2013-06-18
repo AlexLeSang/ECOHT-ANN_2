@@ -267,7 +267,14 @@ int main() {
             std::cerr << "hval: " << hval << std::endl;
             //std::cerr << "hval: " << hval;
             // TODO check hval
-
+            const auto pred = hval * weight_hidden_output;
+            //std::cerr << "pred: " << pred << std::endl;
+            const auto error = pred - act;
+            //std::cerr << "error: " << error << std::endl;
+            const auto delta_HO = hval * error * blr;
+            //std::cerr << "delta_HO: " << delta_HO << std::endl;
+            weight_hidden_output = weight_hidden_output - delta_HO;
+            std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
             exit( -1 );
 
         }

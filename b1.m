@@ -1,5 +1,6 @@
 function f = b1()
 clear,clc,close all 
+format compact
 % MATLAB neural network back propagation code
 % by AliReza KashaniPour & Phil Brierley
 % first version 29 March 2006
@@ -109,17 +110,17 @@ for iter = 1:epochs
         elseif patnum < 1
             patnum = 1;    
         end
-	patnum = 85;qq
+	patnum = 85;
         %set the current pattern
         this_pat = train_inp(patnum,:)
         act = train_out(patnum,1);
         
         %calculate the current error for this pattern
         
-        xx = this_pat*weight_input_hidden
-        hval = (tanh(xx))'
-        %exit(-1)
+        xx = this_pat*weight_input_hidden;
+        hval = (tanh(xx))';
         pred = hval'*weight_hidden_output';
+        
         error = pred - act;
 
         % adjust weight hidden - output
@@ -127,7 +128,8 @@ for iter = 1:epochs
         weight_hidden_output = weight_hidden_output - delta_HO';
 
         % adjust the weights input - hidden
-        delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat;
+        delta_IH= alr.*error.*weight_hidden_output'.*(1-(hval.^2))*this_pat
+        exit(-1)
         weight_input_hidden = weight_input_hidden - delta_IH';
         
     end
