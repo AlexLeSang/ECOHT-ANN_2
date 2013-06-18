@@ -473,6 +473,23 @@ operator * ( const std::vector< std::vector < T > > & vv, const T num )
 
 template< typename T >
 inline
+std::vector< std::vector < T > >
+operator * ( const std::vector< std::vector < T > > & vv, const std::vector< T > & v )
+{
+    const auto vv_size_pair = size( vv );
+    std::vector< std::vector < T > > res( vv_size_pair.second );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        std::vector< T > v1 = v;
+        std::for_each( v1.begin(), v1.end(), [&]( double & val ) {
+            val = val * vv[ 0 ][ i ];
+        } );
+        res[ i ] = std::move( v1 );
+    }
+    return std::move( res );
+}
+
+template< typename T >
+inline
 std::vector< T >
 operator / ( const std::vector< T > & v, const T num )
 {
@@ -499,6 +516,19 @@ operator ^ ( const std::vector< T > & v, const I power )
 {
     std::vector< T > res( v.size() );
     std::transform( v.cbegin(), v.cend(), res.begin(), [&]( const double & v ) { return std::pow( v, power ); } );
+    return std::move( res );
+}
+
+template < typename T >
+std::vector< std::vector< T > >
+vec_to_vecvec( const std::vector< T > & v )
+{
+    std::vector< std::vector< T > > res( v.size() );
+    for ( std::size_t i = 0; i < res.size(); ++ i ) {
+        std::vector< T > vt( 1 );
+        vt[ 0 ] = v[ i ];
+        res[ i ] = std::move( vt );
+    }
     return std::move( res );
 }
 
