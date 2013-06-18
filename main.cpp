@@ -4,7 +4,7 @@
 #include <functional>
 #include <algorithm>
 #include <utility>
-
+#include <set>
 #include <tuple>
 #include <cassert>
 
@@ -297,11 +297,23 @@ int main() {
 //        std::cerr << "alr: " << alr << std::endl;
         const auto blr = alr / 10.0;
 //        std::cerr << "blr: " << blr << std::endl;
-
+        std::set< std::size_t > sett;
         for( std::size_t j = 0; j < patterns; ++j ){
-            const auto patnum = (static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
+            auto patnum = (static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
+            /*if( patnum >= patterns ){
+                patnum = patterns - 1;
+            }else if ( patnum < 0 ){
+                patnum = 0;
+            }*/
             // TODO process all patterns in random order
-
+          /*  if( sett.end() == sett.find( patnum ) ){
+                sett.insert( patnum );
+            }else{
+                while( sett.end() != sett.find( patnum ) ){
+                    patnum = (static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) - 1) % patterns;
+                }
+                sett.insert( patnum );
+            }*/
            //std::cerr << "patnum: " << patnum << std::endl;
             const auto this_pat = train_inp[ patnum ];
             //std::cerr << "this_pat: " << this_pat << std::endl;
@@ -344,19 +356,26 @@ int main() {
 //                error = pred' - train_out;
 //                err(iter) =  (sum(error.^2))^0.5;
         }
-        const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden );
+        std::cerr << "train_inp: " << train_inp << std::endl;
+        std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+        const auto p0 = train_inp * weight_input_hidden;
+        //std::cerr << "p0: " << p0 << std::endl;
+        const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, p0 );
 
         //std::cerr << "train_inp: " << train_inp << std::endl;
-        //std::cerr << "p1: " << p1 << std::endl;
+        std::cerr << "p1: " << p1 << std::endl;
         const auto pred = weight_hidden_output * trans( p1 );
         //std::cerr << "size(pred): " << size(pred) << std::endl;
         //std::cerr << "pred: " << pred << std::endl;
+        //std::cerr << "train_out: " << train_out << std::endl;
         const auto error = pred - train_out;
+        //std::cerr << "error: " << error << std::endl;
         const auto error_sq = error ^ 2;
+        //std::cerr << "error_sq: " << err << std::endl;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
     }
-    std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
-    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+    //std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+    //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
     std::cerr << "err: " << err << std::endl;
     return 0;
 }

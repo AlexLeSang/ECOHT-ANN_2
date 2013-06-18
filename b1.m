@@ -91,7 +91,7 @@ wih = [ -0.0621970,    -0.1586820,    0.01842900,    -0.1575190,    -0.0466730, 
   weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-epochs = 400;
+epochs = 30;
 %do a number of epochs
 for iter = 1:epochs 
     
@@ -138,9 +138,13 @@ for iter = 1:epochs
     % -- another epoch finished
     
     %plot overall network error at end of each epoch
-    p1 = tanh(train_inp*weight_input_hidden)';
-    pred = weight_hidden_output*p1;
-
+    train_inp;
+    weight_input_hidden;
+    p0 = train_inp*weight_input_hidden;
+    p1 = tanh(p0)
+    pred = weight_hidden_output*p1';
+    %train_out
+    
     error = pred' - train_out;
     err(iter) =  (sum(error.^2))^0.5;
        
@@ -167,9 +171,10 @@ for iter = 1:epochs
 %      end
        
 end
-    weight_input_hidden
-    weight_hidden_output
-err
+   % weight_input_hidden
+   % weight_hidden_output
+%err
+exit(-1)
 %% Testing
 X3 = linspace(0.2,0.8,10)';
 X4 = linspace(0.2,0.8,10)';
