@@ -97,7 +97,7 @@ int main() {
 
     //    std::cerr << "res: " << res << std::endl;
     const std::size_t hidden_neurons = 30;
-    std::size_t epochs = 500; // TODO should be constant
+    std::size_t epochs = 30; // TODO should be constant
 
     const auto X1 = linspace( 0.0, 0.5, 10 );
     const auto X2 = linspace( 0.0, 0.5, 10 );
@@ -290,7 +290,6 @@ int main() {
     //std::cerr << "weight_hidden_output.size: " << size( weight_hidden_output ) << std::endl;
     //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
 
-    epochs = 400;
     std::vector< long double > err(epochs);
 
     for( std::size_t i = 0; i < epochs; ++i ) {
@@ -301,6 +300,8 @@ int main() {
 
         for( std::size_t j = 0; j < patterns; ++j ){
             const auto patnum = (static_cast<std::size_t>( round( randd() * patterns + 0.5 ) )-1) % patterns;
+            // TODO process all patterns in random order
+
            //std::cerr << "patnum: " << patnum << std::endl;
             const auto this_pat = train_inp[ patnum ];
             //std::cerr << "this_pat: " << this_pat << std::endl;
@@ -343,7 +344,7 @@ int main() {
 //                error = pred' - train_out;
 //                err(iter) =  (sum(error.^2))^0.5;
         }
-        const auto p1 = feval([]( const long double& v){return tanh(v);}, train_inp * weight_input_hidden);
+        const auto p1 = feval( []( const long double& v ){ return std::tanh( v ); }, train_inp * weight_input_hidden );
 
         //std::cerr << "train_inp: " << train_inp << std::endl;
         //std::cerr << "p1: " << p1 << std::endl;
