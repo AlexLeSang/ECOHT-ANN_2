@@ -106,7 +106,6 @@ void Facade::setNumberOfNeurons(const int val)
 void Facade::startProcess()
 {
     const auto data = preprocessorRef.getData();
-    std::cerr << "data: " << data << std::endl;
     const auto & x1 = data[ 0 ];
     const auto & x2 = data[ 1 ];
     const auto & y = data[ 2 ];

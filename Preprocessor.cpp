@@ -91,8 +91,8 @@ void Preprocessor::writeFile( const std::vector<std::vector<long double> >& data
 {
     std::ofstream outputFile( fileNameOut.toStdString());
 
-    for( auto i =0 ; i < data[0].size(); ++i){
-        for(auto j = 0; j < data.size(); ++j){
+    for( std::size_t i =0 ; i < data[0].size(); ++i){
+        for( std::size_t j = 0; j < data.size(); ++j){
             outputFile << data[j][i];
             if ( j+1 == data.size())
                 outputFile << std::endl;
