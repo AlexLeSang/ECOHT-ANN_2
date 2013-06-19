@@ -55,16 +55,16 @@ public:
 
 
     std::vector<long double> getTrainigResult() const;
-    void setTrainigResult(const std::vector<long double> &value);
+    void setTrainigResult(const std::vector<long double> value);
 
     std::vector<std::vector<long double> > getTrainingData() const;
-    void setTrainingData(const std::vector<std::vector<long double> > &value);
+    void setTrainingData(const std::vector<std::vector<long double> > value);
 
     std::vector<long double> getTestingResult() const;
-    void setTestingResult(const std::vector<long double> &value);
+    void setTestingResult(const std::vector<long double> value);
 
     std::vector<std::vector<long double> > getTestingData() const;
-    void setTestingData(const std::vector<std::vector<long double> > &value);
+    void setTestingData(const std::vector<std::vector<long double> > value);
 
     std::vector<long double> getObtainedTestingResult() const;
     void setObtainedTestingResult(const std::vector<long double> &value);

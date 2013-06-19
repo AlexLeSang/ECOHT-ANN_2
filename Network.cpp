@@ -35,7 +35,7 @@ std::vector<long double> Network::getTrainigResult() const
     return trainigResult;
 }
 
-void Network::setTrainigResult(const std::vector<long double> &value)
+void Network::setTrainigResult(const std::vector<long double> value)
 {
     trainigResult = value;
 }
@@ -45,7 +45,7 @@ std::vector<std::vector<long double> > Network::getTrainingData() const
     return trainingData;
 }
 
-void Network::setTrainingData(const std::vector<std::vector<long double> > &value)
+void Network::setTrainingData(const std::vector<std::vector<long double> > value)
 {
     trainingData = value;
 }
@@ -55,7 +55,7 @@ std::vector<long double> Network::getTestingResult() const
     return testingResult;
 }
 
-void Network::setTestingResult(const std::vector<long double> &value)
+void Network::setTestingResult(const std::vector<long double> value)
 {
     testingResult = value;
 }
@@ -65,7 +65,7 @@ std::vector<std::vector<long double> > Network::getTestingData() const
     return testingData;
 }
 
-void Network::setTestingData(const std::vector<std::vector<long double> > &value)
+void Network::setTestingData(const std::vector<std::vector<long double> > value)
 {
     testingData = value;
 }
