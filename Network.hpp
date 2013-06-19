@@ -79,7 +79,7 @@ public:
     void setTrainingError(const std::vector<long double> &value);
 
 private:
-    Network() : maxNumberOfEpoch( 50 ), accuracy( 1e-4 ), alpha( 1.0 )
+    Network() : maxNumberOfEpoch( 500 ), accuracy( 1e-4 ), alpha( 0.1 )
     {
         setAutoDelete( false );
     }
