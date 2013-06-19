@@ -17,7 +17,7 @@
 #include <QApplication>
 #include "mainwindow.hpp"
 
-/*
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
-*/
+
 
 /*
 int main() {
@@ -200,7 +200,7 @@ int main() {
 //    std::cout << "Average arror: " << c << std::endl;
 //    std::cout << "Max error: " << *cc << std::endl;
 //}
-
+/*
 int main() {
 
     const auto t1 = std::chrono::high_resolution_clock::now();
@@ -263,4 +263,4 @@ int main() {
               << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
     return 0;
 }
-//*/
+*/

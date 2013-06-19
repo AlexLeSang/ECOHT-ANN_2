@@ -441,13 +441,6 @@
              </item>
             </layout>
            </item>
-           <item>
-            <widget class="QTableWidget" name="resultsTable">
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
         </item>
@@ -559,7 +552,6 @@
   <tabstop>startButton</tabstop>
   <tabstop>stopButton</tabstop>
   <tabstop>saveButton</tabstop>
-  <tabstop>resultsTable</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>saveImageButton</tabstop>
  </tabstops>
