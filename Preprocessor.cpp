@@ -14,6 +14,7 @@ Preprocessor &Preprocessor::getInstance()
 
 std::vector< std::vector<long double> > Preprocessor::getData() const
 {
+
     std::vector<std::vector<long double> > res(cache[0].first.size() + cache[0].second.size());
     for( std::size_t i = 0; i < res.size(); ++i ){
         res[i].resize(cache.size());

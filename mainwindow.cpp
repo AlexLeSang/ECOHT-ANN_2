@@ -227,7 +227,8 @@ void MainWindow::openOutputFile()
  */
 void MainWindow::start()
 {
-    Facade::getInstance().startProcess();
+    if(!ui->currentFileName->text().isEmpty()){
+    Facade::getInstance().startProcess();}
     ui->stopButton->show();
 }
 
