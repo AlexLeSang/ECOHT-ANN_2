@@ -90,6 +90,9 @@ void Facade::setOutputFileName(const QString fileName)
 {
     try{
         preprocessorRef.setOutputFileName( fileName );
+        std::ofstream one("1.out");
+        std::ofstream two("1.w");
+        networkRef.save(one,two);
     } catch( std::exception e ){
         std::cerr << e.what() << std::endl;
         return;
