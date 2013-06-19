@@ -201,6 +201,7 @@ int main() {
 //    std::cout << "Max error: " << *cc << std::endl;
 //}
 /*
+/*
 int main() {
 
     const auto t1 = std::chrono::high_resolution_clock::now();
@@ -239,7 +240,7 @@ int main() {
     auto train_out = Y_train;
     auto train_inp = merge( colon(xx), colon(yy) );
 
-    const auto tr_res = training(hidden_neurons, hlr, epochs, train_out, train_inp, &reset);
+    const auto tr_res = training( hidden_neurons, hlr, epochs, 1e-3, train_out, train_inp, &reset );
 
     const auto weight_hidden_output = std::get<0>(tr_res);
     const auto weight_input_hidden = std::get<1>(tr_res);
