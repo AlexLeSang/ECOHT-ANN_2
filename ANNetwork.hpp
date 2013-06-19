@@ -28,11 +28,13 @@ training(const std::vector< std::vector< long double > >& train_in,
     assert( max_epoch > 0 );
     assert( nullptr != reset );
     assert( train_in.size() == train_out.size() );
+    assert(learning_rate > 0.0 || learning_rate < 1.0);
 
 
 
     auto train_inp = train_in;
     auto local_train_out = train_out;
+
     const auto mu_inp = mean( train_inp );
     const auto sigma_inp = stand( train_inp );
     train_inp = ( train_inp - mu_inp[ 0 ] ) / sigma_inp[ 0 ];
@@ -51,10 +53,13 @@ training(const std::vector< std::vector< long double > >& train_in,
     auto weight_input_hidden = ( randn( inputs, hidden_neurons) - 0.5l ) / 10.0l;
     auto weight_hidden_output = ( randn( hidden_neurons ) - 0.5l ) / 10.0l;
 
+    //std::cerr << "local_train_out: " << local_train_out << std::endl;
+    //std::cerr << "train_inp: " << train_inp << std::endl;
+
     for( std::size_t i = 0; i < max_epoch; ++i ) {
         const auto alr = learning_rate;
         const auto blr = alr / 10.0;
-        for( std::size_t j = 0; j < patterns/2; ++j ){
+        for( std::size_t j = 0; j < patterns; ++j ){
             const auto patnum = ( static_cast<std::size_t>( round( randd() * patterns + 0.5 ) ) - 1 ) % patterns;
             const auto this_pat = train_inp[ patnum ];
             const auto act = local_train_out[ patnum ];
@@ -88,9 +93,13 @@ std::vector< long double >
 inline
 eval(const std::vector<std::vector<long double> >& train_test,
      const std::vector<long double>& weight_hidden_output,
-     const std::vector<std::vector<long double>> weight_input_hidden)
+     const std::vector<std::vector<long double>>& weight_input_hidden)
 {
+    //std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+   // std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+   // std::cerr << "train_test: " << train_test << std::endl;
     auto pred = weight_hidden_output * trans( feval( []( const long double & v) { return std::tanh( v ); }, train_test * weight_input_hidden ) );
+
     return std::move(pred);
 }
 
@@ -100,7 +109,7 @@ test_error(const std::vector< long double > & test_out,
            const std::vector< long double > & pred,
            const std::vector< long double > & train_out)
 {
-    const auto a = test_out;//(train_out * sigma_out) + mu_out;
+    const auto a = train_out;//(train_out * sigma_out) + mu_out;
     const auto mu_out = mean( train_out );
     const auto sigma_out = stand( train_out );
     const auto b = (pred * sigma_out) + mu_out;

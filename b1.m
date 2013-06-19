@@ -19,20 +19,24 @@ format compact
 %
 %--------------------------------------------------------
 %% Initializing
-hidden_neurons = 30;
-epochs = 700;
+hidden_neurons = 50;
+epochs = 500;
 
 % ------- load in the data -------
 
-X1 = linspace(0,1.0,10); %input
-X2 = linspace(0,1.0,10); %input
+%X1 = linspace(0,1.0,10); %input
+%X2 = linspace(0,1.0,10); %input
 
-[xx yy] = meshgrid(X1, X2);
+%[xx yy] = meshgrid(X1, X2);
 
-Y_train = sin(xx(:)).*sin(yy(:)); %satisfy output
+%Y_train = sin(xx(:)).*sin(yy(:)); %satisfy output
 
-train_inp = [xx(:) yy(:)];   %setting input
-train_out = [Y_train]; %seting Out put
+%train_inp = [xx(:) yy(:)];   %setting input
+%train_out = [Y_train]; %seting Out put
+
+load data8;
+train_inp = data8(:,1:2);
+train_out = data8(:,3);
 
 % check same number of patterns in each
 if size(train_inp,1) ~= size(train_out,1)
@@ -75,7 +79,7 @@ earlystop = 0;
 reset = 0;
 
 %add slider to adjust the learning rate
-hlr = 0.5;%uicontrol('Style','slider','value',.1,'Min',.01,'Max',1,'SliderStep',[0.01 0.1],'Position', get(hreset,'position')+[75 0 100 0]);
+hlr = 0.1;%uicontrol('Style','slider','value',.1,'Min',.01,'Max',1,'SliderStep',[0.01 0.1],'Position', get(hreset,'position')+[75 0 100 0]);
 
 % ---------- set weights -----------------
 %set initial random weights
@@ -91,10 +95,9 @@ weight_hidden_output = (randn(1,hidden_neurons) - 0.5)/10;
   %weight_hidden_output = (who - 0.5)/10;
 
 %% Learining
-epochs = 300;
+
 %do a number of epochs
 for iter = 1:epochs 
-    
     %get the learning rate from the slider
     alr = hlr;
     blr = alr / 10;
@@ -147,9 +150,7 @@ for iter = 1:epochs
     
     error = pred' - train_out;
     err(iter) =  (sum(error.^2))^0.5;
-       
-       figure(1)
-    plot(err)
+     
     %reset weights if requested
 %      if reset
 %          weight_input_hidden = (randn(inputs,hidden_neurons) - 0.5)/10;
@@ -171,19 +172,22 @@ for iter = 1:epochs
 %      end
        
 end
-   % weight_input_hidden
-   % weight_hidden_output
-err
+    weight_input_hidden
+    weight_hidden_output
+exit(-1)
 
 %% Testing
-X3 = linspace(0.2,0.8,10)';
-X4 = linspace(0.2,0.8,10)';
+%X3 = linspace(0.2,0.8,10)';
+%X4 = linspace(0.2,0.8,10)';
 
-[xx1 yy1] = meshgrid(X3, X4);
+%[xx1 yy1] = meshgrid(X3, X4);
 
-train_test = [xx1(:) yy1(:)];
+%train_test = [xx1(:) yy1(:)];
 
-test_out = sin(xx1(:)).*sin(yy1(:));
+%test_out = sin(xx1(:)).*sin(yy1(:));
+
+train_test = data8(:,1:2)
+test_out = data8(:,3)
 
 mu_test = mean(train_test);
 sigma_test = std(train_test);
@@ -196,13 +200,13 @@ pred = weight_hidden_output*tanh(train_test*weight_input_hidden)';
 
 % Finish
 % fprintf('state after %d epochs\n',iter);
-  a = (test_out* sigma_out(:,1)) + mu_out(:,1);
+  a = test_out%(test_out* sigma_out(:,1)) + mu_out(:,1);
   b = (pred'* sigma_out(:,1)) + mu_out(:,1);
   act_pred_err = [a b b-a]  %display actual,predicted & error
-  figure
-mesh(X1,X2,vec2mat(a,10))
-figure
-mesh(X1,X2,vec2mat(b,10))
+ % figure
+%mesh(X1,X2,vec2mat(a,10))
+%figure
+%mesh(X1,X2,vec2mat(b,10))
 %  
 %  figure
 %  plot(X3,act_pred_err((1:(size(train_inp,1)/2)),2));

@@ -25,7 +25,7 @@ std::vector< std::vector<long double> > Preprocessor::getData() const
             a = j;
         }
         for( auto j = 0; j < cache[i].second.size(); ++j ){
-            res[j + a][i] = cache[i].second[j];
+            res[j + a + 1][i] = cache[i].second[j];
         }
     }
     return res;

@@ -12,10 +12,14 @@ void Network::run() {
 
     const auto weight_hidden_output = std::get<0>(training_result);
     const auto weight_input_hidden = std::get<1>(training_result);
+    std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
+    std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
+    exit(-1);
     trainingError = std::get<2>(training_result);
 
 
     obtainedTestingResult = eval( merge( testingData, ones( testingData.size() ) ), weight_hidden_output, weight_input_hidden);
+
     testingError = test_error(testingResult, obtainedTestingResult, trainigResult);
 
     Facade::getInstance().processFinished();
