@@ -17,7 +17,7 @@
 #include <QApplication>
 #include "mainwindow.hpp"
 
-/*
+///*
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
-*/
+//*/
 
 /*
 int main() {
@@ -201,6 +201,7 @@ int main() {
 //    std::cout << "Max error: " << *cc << std::endl;
 //}
 
+/*
 int main() {
 
     const auto t1 = std::chrono::high_resolution_clock::now();
@@ -239,7 +240,7 @@ int main() {
     auto train_out = Y_train;
     auto train_inp = merge( colon(xx), colon(yy) );
 
-    const auto tr_res = training(hidden_neurons, hlr, epochs, train_out, train_inp, &reset);
+    const auto tr_res = training( hidden_neurons, hlr, epochs, 1e-3, train_out, train_inp, &reset );
 
     const auto weight_hidden_output = std::get<0>(tr_res);
     const auto weight_input_hidden = std::get<1>(tr_res);
@@ -263,4 +264,4 @@ int main() {
               << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " msec\n";
     return 0;
 }
-//*/
+*/

@@ -113,12 +113,12 @@ void Facade::startProcess()
 
     const auto input = merge( x1, x2 );
 
-    const auto training_testing_data = split( input, std::make_tuple( 0.5, 0.5 ) );
+    const auto training_testing_data = split( input, std::make_tuple( 0.6, 0.4 ) );
 
     const auto & trainingData = std::get<0>( training_testing_data );
     const auto & testingData = std::get<1>( training_testing_data );
 
-    const auto test_training_result = split( y, std::make_tuple( 0.5, 0.5 ) );
+    const auto test_training_result = split( y, std::make_tuple( 0.6, 0.4 ) );
     const auto & trainingResult = std::get<0>( test_training_result );
     const auto & testingResult = std::get<1>( test_training_result );
 
@@ -126,11 +126,11 @@ void Facade::startProcess()
     Q_ASSERT( trainingData.size() == trainingResult.size() );
     Q_ASSERT( testingData.size() == testingData.size() );
 
-    networkRef.setTrainingData( input );
-    networkRef.setTrainigResult( y );
+    networkRef.setTrainingData( trainingData );
+    networkRef.setTrainigResult( trainingResult );
 
-    networkRef.setTestingData( input );
-    networkRef.setTestingResult( y );
+    networkRef.setTestingData( testingData );
+    networkRef.setTestingResult( testingResult );
 
     QThreadPool::globalInstance()->start( &networkRef );
 }
