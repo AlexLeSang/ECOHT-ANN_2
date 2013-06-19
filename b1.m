@@ -58,7 +58,7 @@ train_out = (train_out(:,:) - mu_out(:,1)) / sigma_out(:,1);
 train_out = train_out';
 
 %read how many patterns
-patterns = size(train_inp,1);
+patterns = size(train_inp,1)
 
 %add a bias as an input
 bias = ones(patterns,1);
@@ -172,9 +172,8 @@ for iter = 1:epochs
 %      end
        
 end
-    weight_input_hidden
-    weight_hidden_output
-exit(-1)
+   % weight_input_hidden
+    %weight_hidden_output
 
 %% Testing
 %X3 = linspace(0.2,0.8,10)';
@@ -195,6 +194,9 @@ train_test = (train_test(:,:) - mu_test(:,1)) / sigma_test(:,1);
 train_test = [train_test bias];
 
 pred = weight_hidden_output*tanh(train_test*weight_input_hidden)';
+pred
+exit(-1)
+
 
 %a = (pred' - Y_train)
 
