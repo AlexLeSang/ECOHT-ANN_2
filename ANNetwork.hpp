@@ -70,7 +70,7 @@ training(const std::size_t hidden_neurons,
         const auto error = pred - train_out;
         const auto error_sq = error ^ 2;
         err[ i ] = std::sqrt( std::accumulate( error_sq.cbegin(), error_sq.cend(), 0.0, std::plus<long double> () ) );
-//        std::cerr << "err[ " <<  i << " ]: " << err[ i ] << ' ' << i <<  std::endl;
+        std::cerr << "err[ " <<  i << " ]: " << err[ i ] << ' ' << i <<  std::endl;
 
         if ( *reset ) break;
         if ( err[ i ] <= desired_accuracy ) break;
