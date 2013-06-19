@@ -148,8 +148,92 @@
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
                <layout class="QGridLayout" name="gridLayout_4">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="betaLabel">
+                  <property name="toolTip">
+                   <string>Stretch coefficient</string>
+                  </property>
+                  <property name="text">
+                   <string>Neurons</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="precisionlabel">
+                  <property name="toolTip">
+                   <string>Precision</string>
+                  </property>
+                  <property name="text">
+                   <string>Precision</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="2" column="1">
                  <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="2" column="2">
+                 <widget class="QSpinBox" name="maxEpoch">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>134</width>
+                    <height>23</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Maximim number of epochs</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="maximum">
+                   <number>1000000</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>500</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="alphaLabel">
+                  <property name="toolTip">
+                   <string>Training coefficient</string>
+                  </property>
+                  <property name="text">
+                   <string>Alpha</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="maxEpochlabel">
+                  <property name="toolTip">
+                   <string>Maximim number of epochs</string>
+                  </property>
+                  <property name="text">
+                   <string>Max epoch</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <spacer name="horizontalSpacer_10">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -178,18 +262,8 @@
                   </item>
                  </layout>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="betaLabel">
-                  <property name="toolTip">
-                   <string>Stretch coefficient</string>
-                  </property>
-                  <property name="text">
-                   <string>Neurons</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <spacer name="horizontalSpacer_9">
+                <item row="3" column="1">
+                 <spacer name="horizontalSpacer_12">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -200,16 +274,6 @@
                    </size>
                   </property>
                  </spacer>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="maxEpochlabel">
-                  <property name="toolTip">
-                   <string>Maximim number of epochs</string>
-                  </property>
-                  <property name="text">
-                   <string>Max epoch</string>
-                  </property>
-                 </widget>
                 </item>
                 <item row="3" column="2">
                  <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -247,70 +311,6 @@
                    </widget>
                   </item>
                  </layout>
-                </item>
-                <item row="2" column="2">
-                 <widget class="QSpinBox" name="maxEpoch">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>134</width>
-                    <height>23</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>Maximim number of epochs</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="maximum">
-                   <number>1000000</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>1</number>
-                  </property>
-                  <property name="value">
-                   <number>500</number>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <spacer name="horizontalSpacer_10">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="precisionlabel">
-                  <property name="toolTip">
-                   <string>Precision</string>
-                  </property>
-                  <property name="text">
-                   <string>Precision</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="alphaLabel">
-                  <property name="toolTip">
-                   <string>Training coefficient</string>
-                  </property>
-                  <property name="text">
-                   <string>Alpha</string>
-                  </property>
-                 </widget>
                 </item>
                 <item row="0" column="2">
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -355,8 +355,8 @@
                   </item>
                  </layout>
                 </item>
-                <item row="3" column="1">
-                 <spacer name="horizontalSpacer_12">
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_9">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
@@ -367,6 +367,42 @@
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>Test percent</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                  <property name="decimals">
+                   <number>2</number>
+                  </property>
+                  <property name="maximum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.100000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>0.000000000000000</double>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -388,7 +424,7 @@
            <string>Results Group</string>
           </property>
           <property name="title">
-           <string>Results</string>
+           <string>Buttons</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
@@ -396,7 +432,7 @@
              <item>
               <widget class="QPushButton" name="startButton">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -443,13 +479,6 @@
               </spacer>
              </item>
             </layout>
-           </item>
-           <item>
-            <widget class="QTableWidget" name="resultsTable">
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>
@@ -510,7 +539,7 @@
      <x>0</x>
      <y>0</y>
      <width>742</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
@@ -562,7 +591,6 @@
   <tabstop>startButton</tabstop>
   <tabstop>stopButton</tabstop>
   <tabstop>saveButton</tabstop>
-  <tabstop>resultsTable</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>saveImageButton</tabstop>
  </tabstops>

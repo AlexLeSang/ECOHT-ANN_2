@@ -90,6 +90,9 @@ void Facade::setOutputFileName(const QString fileName)
 {
     try{
         preprocessorRef.setOutputFileName( fileName );
+        std::ofstream one("1.out");
+        std::ofstream two("1.w");
+        networkRef.save(one,two);
     } catch( std::exception e ){
         std::cerr << e.what() << std::endl;
         return;
@@ -106,6 +109,7 @@ void Facade::setNumberOfNeurons(const int val)
 void Facade::startProcess()
 {
     const auto data = preprocessorRef.getData();
+   // std::cerr << "data: " << data << std::endl;
     const auto & x1 = data[ 0 ];
     const auto & x2 = data[ 1 ];
     const auto & y = data[ 2 ];
@@ -125,11 +129,11 @@ void Facade::startProcess()
     Q_ASSERT( trainingData.size() == trainingResult.size() );
     Q_ASSERT( testingData.size() == testingData.size() );
 
-    networkRef.setTrainingData( trainingData );
-    networkRef.setTrainigResult( trainingResult );
+    networkRef.setTrainingData( input );
+    networkRef.setTrainigResult( y );
 
-    networkRef.setTestingData( testingData );
-    networkRef.setTestingResult( testingResult );
+    networkRef.setTestingData( input );
+    networkRef.setTestingResult( y );
 
     QThreadPool::globalInstance()->start( &networkRef );
 }

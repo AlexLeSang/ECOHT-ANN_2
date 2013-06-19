@@ -10,8 +10,8 @@ void Network::run() {
 
     auto training_result = training( numberOfNeurons, alpha, maxNumberOfEpoch, accuracy, trainigResult, trainingData, &stopFlag );
 
-    const auto weight_hidden_output = std::get<0>(training_result);
-    const auto weight_input_hidden = std::get<1>(training_result);
+    weight_hidden_output = std::get<0>(training_result);
+    weight_input_hidden = std::get<1>(training_result);
    // std::cerr << "weight_hidden_output: " << weight_hidden_output << std::endl;
    // std::cerr << "weight_input_hidden: " << weight_input_hidden << std::endl;
     trainingError = std::get<2>(training_result);

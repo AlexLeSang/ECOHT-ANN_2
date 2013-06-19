@@ -6,6 +6,7 @@
 #include <QPair>
 #include <QList>
 #include <QVector>
+#include <fstream>
 
 #include <QRunnable>
 
@@ -18,6 +19,12 @@
 class Network : public QRunnable
 {
 public:
+    void save(std::ofstream& one , std::ofstream& two){
+           one << merge( merge (testingData, testingResult), obtainedTestingResult);
+           two << "weight_hidden_output: " << weight_hidden_output << std::endl;
+           two << "weight_input_hidden: " << weight_input_hidden << std::endl;
+    }
+
     static Network & getInstance() {
         static Network instance;
         return instance;
@@ -79,7 +86,7 @@ public:
     void setTrainingError(const std::vector<long double> &value);
 
 private:
-    Network() : maxNumberOfEpoch( 50 ), accuracy( 1e-4 ), alpha( 1.0 )
+    Network() : maxNumberOfEpoch( 500 ), accuracy( 1e-4 ), alpha( 0.1 )
     {
         setAutoDelete( false );
     }
@@ -103,6 +110,8 @@ private:
     std::vector< std::vector< long double > > testingData;
 
     std::vector< long double > obtainedTestingResult;
+    std::vector<long double > weight_hidden_output;
+    std::vector<std::vector<long double> > weight_input_hidden;
     std::vector< long double > testingError;
 };
 

@@ -156,8 +156,8 @@ void MainWindow::showResults(const Dataset & data)
 {
     const quint32 tableWidth = data.first().first.size() + data.first().second.size();
     const quint32 inputLength = data.first().first.size();
-    ui->resultsTable->setColumnCount( tableWidth );
-    ui->resultsTable->setRowCount( data.size() );
+    //ui->resultsTable->setColumnCount( tableWidth );
+    //ui->resultsTable->setRowCount( data.size() );
 
     QStringList labelsList;
     for ( qint32 i=1; i <= data.first().first.size(); ++i ){
@@ -168,17 +168,17 @@ void MainWindow::showResults(const Dataset & data)
         labelsList.append( QString( "y" ) + QString::number( i ) );
     }
 
-    ui->resultsTable->setHorizontalHeaderLabels( labelsList );
+   //ui->resultsTable->setHorizontalHeaderLabels( labelsList );
 
     for ( auto it = data.constBegin(); it != data.constEnd(); ++it ){
         for ( auto itInputs = (*it).first.constBegin(); itInputs != (*it).first.constEnd(); ++itInputs ){
             QTableWidgetItem *item = new QTableWidgetItem( QString::number( *itInputs ));
-            ui->resultsTable->setItem( it - data.constBegin(), itInputs - (*it).first.constBegin(), item );
+    //        ui->resultsTable->setItem( it - data.constBegin(), itInputs - (*it).first.constBegin(), item );
         }
 
         for ( auto itOutputs = (*it).second.constBegin(); itOutputs != (*it).second.constEnd(); ++itOutputs ){
             QTableWidgetItem *item = new QTableWidgetItem( QString::number( *itOutputs ));
-            ui->resultsTable->setItem( it - data.constBegin(), itOutputs - (*it).second.constBegin() + inputLength, item );
+    //        ui->resultsTable->setItem( it - data.constBegin(), itOutputs - (*it).second.constBegin() + inputLength, item );
         }
     }
 }
@@ -227,7 +227,8 @@ void MainWindow::openOutputFile()
  */
 void MainWindow::start()
 {
-    Facade::getInstance().startProcess();
+    if(!ui->currentFileName->text().isEmpty()){
+    Facade::getInstance().startProcess();}
     ui->stopButton->show();
 }
 
